@@ -2,6 +2,7 @@ from tkinter import *
 import tkinter as tk
 import winsound
 import random
+import pickle
 
 
 class Open_Window:
@@ -34,7 +35,7 @@ class Home_Window:
         self.play = Button(self.canvas, text = "NEW GAME", font=("padauk book",28),fg="white",bg="black",borderwidth=0, command =lambda: [self.del_win(), inself.switch_frame(Game_Win)])
         self.play.place(x=300,y=200,width=240,height=50)
 
-        self.load = Button(self.canvas, text = "LOAD GAME", font=("padauk book",28),fg="white",bg="black",borderwidth=0)
+        self.load = Button(self.canvas, text = "LOAD GAME", font=("padauk book",28),fg="white",bg="black",borderwidth=0, command = self.game)
         self.load.place(x=295,y=260,width=250,height=50)
 
         self.instructions = Button(self.canvas, text = "INSTRUCTIONS", font=("padauk book",28),fg="white",bg="black",borderwidth=0)
@@ -47,6 +48,8 @@ class Home_Window:
         self.credits.place(x=325,y=450,width=180,height=50)
 
     #Buttons Pressed
+    def game(self):
+        Game_Win(inself)
     def credits(self):
         Credits_Win()
     def del_win(self):
@@ -56,6 +59,9 @@ class Game_Win:
     def __init__(self, inself):
         self.can = Canvas( width = 800, height = 675, highlightthickness = 0, relief='ridge', bg= "black")
         self.can.place(x=0,y=0)
+
+        self.save = Button(self.can, text = "Save Game", font=("padauk book",20),fg="white",bg="black",borderwidth=0,command= self.load)
+        self.save.place(x=20, y=600)
         #self.canvas = Canvas( width = 375, height = 675, highlightthickness = 0, relief='ridge')
         #self.canvas.place(x=300,y=0)
         
@@ -72,20 +78,27 @@ class Game_Win:
 
         self.table(positions, len(positions), len(positions[0])-1, 0, "C0L0", 0,0)
     def table(self, positions, columm, lines, color, name, contli, contco):
-        self.identi= self.can.find_overlapping(0, 0, 55, 200)
+        
+        #self.identi= self.can.find_overlapping(0, 0, 55, 200)
         if contco==columm:
+            try:
+                pickle_file=open('data.pickle', 'rb')
+                self.load_game(pikle_file, 0, 1)
+            except:
+                nothing = 0
+                
             self.can.create_rectangle(0,0, 55,55, fill='red')
             self.can.create_rectangle(0,100, 55,155, fill='yellow')
             self.identi0= self.can.find_overlapping(0, 0, 55, 55)
             self.identi1= self.can.find_overlapping(0, 57, 55, 100)
             #self.can.tag_raise(self.identi[0])
-            if (self.can.gettags(self.identi0[0]))!="run" or (self.can.gettags(self.identi1[0]))!="run":
-                self.can.tag_bind(self.identi0[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi0[0]))
-                self.can.tag_bind(self.identi0[0], "<Button1-Motion>", self.move)
-                self.can.tag_bind(self.identi0[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"one"))
-                self.can.tag_bind(self.identi1[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi1[0]))
-                self.can.tag_bind(self.identi1[0], "<Button1-Motion>", self.move)
-                self.can.tag_bind(self.identi1[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"two"))
+            
+            self.can.tag_bind(self.identi0[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi0[0]))
+            self.can.tag_bind(self.identi0[0], "<Button1-Motion>", self.move)
+            self.can.tag_bind(self.identi0[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"one"))
+            self.can.tag_bind(self.identi1[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi1[0]))
+            self.can.tag_bind(self.identi1[0], "<Button1-Motion>", self.move)
+            self.can.tag_bind(self.identi1[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"two"))
             
             self.object_mo = None
         elif contli<=lines and color==0 and contco<=columm:
@@ -100,6 +113,15 @@ class Game_Win:
             return self.table(positions, columm, lines, 0, name[:-1] + str(int(name[3])+ 1), contli+1, contco)
         elif contco<columm:
             return self.table(positions, columm, 4, color, "C"+str(int(name[1])+1)+"L0", 0, contco+1)
+        
+    def load_game(self, rooks, rook, place):
+        if rook == len(rooks)-2:
+            pickle_file.close()
+        else:
+            self.create(rooks[rook], rooks[place])
+            self.load_game(rooks, rook+2, place+2)
+            
+        
     def press_boton(self, event, ID):
         rook = ID
         self.selected_rook = (rook, event.x, event.y)
@@ -115,13 +137,25 @@ class Game_Win:
         self.selected_rook = (rook, x, y)
         
         #self.new_position(squads, 0, x, y, rook)
-    def create(self, rook, lis):
+    def load (self):
+        pickle_file = open('data.pickle', 'wb')
+        pickle.dump(self.data, pickle_file)
+        pickle_file.close()
+        pickle_file=open('data.pickle', 'rb')
+        data= pickle.load(pickle_file)
+        print(data)
+    def create(self, rook, place):
         if rook == "one":
             self.object = Label (self.can,  bg="red")
-            self.object.place(x=lis[0], y=lis[1], width=55,height=55)
+            self.object.place(x=place[0], y=place[1], width=55,height=55)
         elif rook == "two":
             self.object = Label (self.can,  bg="yellow")
-            self.object.place(x=lis[0], y=lis[1], width=55,height=55)        
+            self.object.place(x=place[0], y=place[1], width=55,height=55)
+        data = (rook, place)
+        try:
+            self.data= self.data + data
+        except:
+            self.data= data
         self.rooks(rook)
         
     def rooks(self, rook):
@@ -252,3 +286,4 @@ if __name__ == "__main__":
     home_window = Open_Window(window)
     window.title("Clash Rooks")
     window.minsize(800,700)
+
