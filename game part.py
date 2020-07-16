@@ -10,8 +10,9 @@ class Open_Window:
         self.open(Home_Window)
     def open(self, Twindow):
         Twindow(self)
-    def switch_frame(self, Twindow):
-        Twindow(self)
+    def switch_frame(self, Twindow, saved):
+        print(saved)
+        Twindow(self, saved)
         
         
 class Home_Window:
@@ -32,10 +33,10 @@ class Home_Window:
         self.rooks.place(x=310,y=110,width=214,height=47)
 
         #Buttons
-        self.play = Button(self.canvas, text = "NEW GAME", font=("padauk book",28),fg="white",bg="black",borderwidth=0, command =lambda: [self.del_win(), inself.switch_frame(Game_Win)])
+        self.play = Button(self.canvas, text = "NEW GAME", font=("padauk book",28),fg="white",bg="black",borderwidth=0, command =lambda: [self.del_win(), inself.switch_frame(Game_Win, "new")])
         self.play.place(x=300,y=200,width=240,height=50)
 
-        self.load = Button(self.canvas, text = "LOAD GAME", font=("padauk book",28),fg="white",bg="black",borderwidth=0, command = self.game)
+        self.load = Button(self.canvas, text = "LOAD GAME", font=("padauk book",28),fg="white",bg="black",borderwidth=0, command = lambda: [self.del_win(), inself.switch_frame(Game_Win, "load")])
         self.load.place(x=295,y=260,width=250,height=50)
 
         self.instructions = Button(self.canvas, text = "INSTRUCTIONS", font=("padauk book",28),fg="white",bg="black",borderwidth=0)
@@ -56,7 +57,8 @@ class Home_Window:
         self.canvas.destroy()
         
 class Game_Win:
-    def __init__(self, inself):
+    def __init__(self, inself, saved):
+        print (saved + " 2")
         self.can = Canvas( width = 800, height = 675, highlightthickness = 0, relief='ridge', bg= "black")
         self.can.place(x=0,y=0)
 
@@ -76,16 +78,21 @@ class Game_Win:
                      ((300,525, 375,600),(375,525, 450,600),(450,525, 525,600),(525,525, 600,600),(600,525, 675,600)),
                      ((300,600, 375,675),(375,600, 450,675),(450,600, 525,675),(525,600, 600,675),(600,600, 675,675)))
 
-        self.table(positions, len(positions), len(positions[0])-1, 0, "C0L0", 0,0)
-    def table(self, positions, columm, lines, color, name, contli, contco):
+        self.table(positions, len(positions), len(positions[0])-1, 0, "C0L0", 0,0, saved)
+    def table(self, positions, columm, lines, color, name, contli, contco, saved):
         
         #self.identi= self.can.find_overlapping(0, 0, 55, 200)
         if contco==columm:
-            try:
+            if saved == "load":
+                #try:
                 pickle_file=open('data.pickle', 'rb')
-                self.load_game(pikle_file, 0, 1)
-            except:
-                nothing = 0
+                rooks =pickle.load(pickle_file)
+                print (saved + " 3")
+                    
+                self.load_game(rooks, 0, 1)
+                #except:
+                #    nothing=0
+
                 
             self.can.create_rectangle(0,0, 55,55, fill='red')
             self.can.create_rectangle(0,100, 55,155, fill='yellow')
@@ -105,21 +112,25 @@ class Game_Win:
             self.can.create_rectangle(positions[contco][contli][0], positions[contco][contli][1],
                                          positions[contco][contli][2], positions[contco][contli][3],
                                          width=1, fill='green',tags=name)
-            return self.table(positions, columm, lines, 1, name[:-1] + str(int(name[3])+ 1), contli+1, contco)
+            return self.table(positions, columm, lines, 1, name[:-1] + str(int(name[3])+ 1), contli+1, contco, saved)
         elif contli<=lines and color==1 and contco<=columm:
             self.can.create_rectangle(positions[contco][contli][0], positions[contco][contli][1],
                                          positions[contco][contli][2], positions[contco][contli][3],
                                          width=1, fill='blue',tags=name)
-            return self.table(positions, columm, lines, 0, name[:-1] + str(int(name[3])+ 1), contli+1, contco)
+            return self.table(positions, columm, lines, 0, name[:-1] + str(int(name[3])+ 1), contli+1, contco, saved)
         elif contco<columm:
-            return self.table(positions, columm, 4, color, "C"+str(int(name[1])+1)+"L0", 0, contco+1)
+            return self.table(positions, columm, 4, color, "C"+str(int(name[1])+1)+"L0", 0, contco+1, saved)
         
     def load_game(self, rooks, rook, place):
+        #print (rooks[rook])
+        #print (rook)
+        #print (len(rooks)-2)
         if rook == len(rooks)-2:
-            pickle_file.close()
+            self.create(rooks[rook], rooks[place], (rooks, rook, place, False))
+            
         else:
-            self.create(rooks[rook], rooks[place])
-            self.load_game(rooks, rook+2, place+2)
+            self.create(rooks[rook], rooks[place], (rooks, rook, place, True))
+            #self.load_game(rooks, rook+2, place+2)
             
         
     def press_boton(self, event, ID):
@@ -144,7 +155,7 @@ class Game_Win:
         pickle_file=open('data.pickle', 'rb')
         data= pickle.load(pickle_file)
         print(data)
-    def create(self, rook, place):
+    def create(self, rook, place, info):
         if rook == "one":
             self.object = Label (self.can,  bg="red")
             self.object.place(x=place[0], y=place[1], width=55,height=55)
@@ -156,7 +167,11 @@ class Game_Win:
             self.data= self.data + data
         except:
             self.data= data
-        self.rooks(rook)
+        if info ==  "gaming":
+            self.rooks(rook)
+        else:
+            if info[3] == True:
+                self.load_game(info[0], info[1]+2, info[2]+2)
         
     def rooks(self, rook):
         
@@ -190,7 +205,7 @@ class Game_Win:
         if self.can.coords(self.squads[0])[0]-10<=over[2]<=self.can.coords(self.squads[0])[2] and self.can.coords(self.squads[0])[1]<=over[3]<=self.can.coords(self.squads[0])[3]and len(self.can.find_overlapping(over[0], over[1], over[2], over[3]))<=2:
             self.can.delete(ID)
             lis=(310,10, 365,65)
-            self.create(rook, lis)
+            self.create(rook, lis, "gaming")
             #self.can.coords(ID, 310,10, 365,65)
             #print((self.can.gettags(self.identi0[0])))
             
@@ -198,22 +213,43 @@ class Game_Win:
         elif self.can.coords(self.squads[1])[0]-10<=over[2]<=self.can.coords(self.squads[1])[2]and self.can.coords(self.squads[0])[1]<=over[3]<=self.can.coords(self.squads[0])[3]and len(self.can.find_overlapping(over[0], over[1], over[2], over[3]))<=2:
             self.can.delete(ID)
             lis = (385,10, 440,65)
-            self.create(rook, lis)
+            self.create(rook, lis, "gaming")
 
         elif self.can.coords(self.squads[2])[0]-10<=over[2]<=self.can.coords(self.squads[2])[2]and self.can.coords(self.squads[0])[1]<=over[3]<=self.can.coords(self.squads[0])[3]and len(self.can.find_overlapping(over[0], over[1], over[2], over[3]))<=2:
             self.can.delete(ID)
             lis=(460,10, 515,65)
-            self.create(rook, lis)
+            self.create(rook, lis, "gaming")
 
         elif self.can.coords(self.squads[3])[0]-10<=over[2]<=self.can.coords(self.squads[3])[2]and self.can.coords(self.squads[0])[1]<=over[3]<=self.can.coords(self.squads[0])[3]and len(self.can.find_overlapping(over[0], over[1], over[2], over[3]))<=2:
             self.can.delete(ID)
             lis=(535,10, 590,65)
-            self.create(rook, lis)
+            self.create(rook, lis, "gaming")
 
         elif self.can.coords(self.squads[4])[0]-10<=over[2]<=self.can.coords(self.squads[4])[2]and self.can.coords(self.squads[0])[1]<=over[3]<=self.can.coords(self.squads[0])[3]and len(self.can.find_overlapping(over[0], over[1], over[2], over[3]))<=2:
             self.can.delete(ID)
             lis=(610,10, 665,65)
-            self.create(rook, lis)
+            self.create(rook, lis, "gaming")
+            
+        elif self.can.coords(self.squads[5])[0]-10<=over[2]<=self.can.coords(self.squads[5])[2]and self.can.coords(self.squads[5])[1]<=over[3]<=self.can.coords(self.squads[5])[3]and len(self.can.find_overlapping(over[0], over[1], over[2], over[3]))<=2:
+            self.can.delete(ID)
+            lis=(310,85, 365,140)
+            self.create(rook, lis, "gaming")
+        elif self.can.coords(self.squads[6])[0]-10<=over[2]<=self.can.coords(self.squads[6])[2]and self.can.coords(self.squads[5])[1]<=over[3]<=self.can.coords(self.squads[5])[3]and len(self.can.find_overlapping(over[0], over[1], over[2], over[3]))<=2:
+            self.can.delete(ID)
+            lis=(385,85, 440,140)
+            self.create(rook, lis, "gaming")
+        elif self.can.coords(self.squads[7])[0]-10<=over[2]<=self.can.coords(self.squads[7])[2]and self.can.coords(self.squads[5])[1]<=over[3]<=self.can.coords(self.squads[5])[3]and len(self.can.find_overlapping(over[0], over[1], over[2], over[3]))<=2:
+            self.can.delete(ID)
+            lis=(460,85, 515,140)
+            self.create(rook, lis, "gaming")
+        elif self.can.coords(self.squads[8])[0]-10<=over[2]<=self.can.coords(self.squads[8])[2]and self.can.coords(self.squads[5])[1]<=over[3]<=self.can.coords(self.squads[5])[3]and len(self.can.find_overlapping(over[0], over[1], over[2], over[3]))<=2:
+            self.can.delete(ID)
+            lis=(535,85, 590,140)
+            self.create(rook, lis, "gaming")
+        elif self.can.coords(self.squads[9])[0]-10<=over[2]<=self.can.coords(self.squads[9])[2]and self.can.coords(self.squads[5])[1]<=over[3]<=self.can.coords(self.squads[5])[3]and len(self.can.find_overlapping(over[0], over[1], over[2], over[3]))<=2:
+            self.can.delete(ID)
+            lis=(610,85, 665,140)
+            self.create(rook, lis, "gaming")
 
         else:
             if rook == "one":
