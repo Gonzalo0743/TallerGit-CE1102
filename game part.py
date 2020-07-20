@@ -88,9 +88,8 @@ class Game_Win:
                 #try:
                 pickle_file=open('data.pickle', 'rb')
                 rooks =pickle.load(pickle_file)
-                print (saved + " 3")
                     
-                self.load_game(rooks, 0, 1)
+                self.load_game(rooks, 0, 1, 2)
                 #except:
                 #    nothing=0
 
@@ -126,17 +125,7 @@ class Game_Win:
         elif contco<columm:
             return self.table(positions, columm, 4, color, "C"+str(int(name[1])+1)+"L0", 0, contco+1, saved)
         
-    def load_game(self, rooks, rook, place):
-        #print (rooks[rook])
-        #print (rook)
-        #print (len(rooks)-2)
-        if rook == len(rooks)-2:
-            self.create(rooks[rook], rooks[place], (rooks, rook, place, False))
-            
-        else:
-            self.create(rooks[rook], rooks[place], (rooks, rook, place, True))
-            #self.load_game(rooks, rook+2, place+2)
-            
+    
         
     def press_boton(self, event, ID):
         rook = ID
@@ -153,6 +142,18 @@ class Game_Win:
         self.selected_rook = (rook, x, y)
         
         #self.new_position(squads, 0, x, y, rook)
+    def load_game(self, rooks, rook, place, color):
+        print (rooks[color])
+        #print (rook)
+        print (color)
+        
+        if rook == len(rooks)-3:
+            self.create(rooks[rook], rooks[place],(rooks, rook, place,color,  False),rooks[color])
+            
+        else:
+            self.create(rooks[rook], rooks[place],(rooks, rook, place,color, True),rooks[color])
+            #self.load_game(rooks, rook+2, place+2)
+            
     def load (self):
         pickle_file = open('data.pickle', 'wb')
         pickle.dump(self.data, pickle_file)
@@ -173,7 +174,7 @@ class Game_Win:
             dimage = Label(self.can, image=Tower, bg=color)
             dimage.image =  Tower
             dimage.place(x=place[0]+10, y=place[1]-5)
-        data = (rook, place)
+        data = (rook, place, color)
         try:
             self.data= self.data + data
         except:
@@ -181,8 +182,8 @@ class Game_Win:
         if info ==  "gaming":
             self.rooks(rook)
         else:
-            if info[3] == True:
-                self.load_game(info[0], info[1]+2, info[2]+2)
+            if info[4] == True:
+                self.load_game(info[0], info[1]+3, info[2]+3, info[3]+3)
         
     def rooks(self, rook):
         
