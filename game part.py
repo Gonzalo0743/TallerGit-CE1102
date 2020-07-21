@@ -92,7 +92,11 @@ class Game_Win:
                 self.load_game(rooks, 0, 1, 2)
                 #except:
                 #    nothing=0
-
+            self.squads = ["C0L0", "C0L1", "C0L2", "C0L3", "C0L4", "C1L0", "C1L1", "C1L2", "C1L3", "C1L4",
+                  "C2L0", "C2L1", "C2L2", "C2L3", "C2L4", "C3L0", "C3L1", "C3L2", "C3L3", "C3L4",
+                  "C4L0", "C4L1", "C4L2", "C4L3", "C4L4", "C5L0", "C5L1", "C5L2", "C5L3", "C5L4",
+                  "C6L0", "C6L1", "C6L2", "C6L3", "C6L4", "C7L0", "C7L1", "C7L2", "C7L3", "C7L4",
+                  "C8L0", "C8L1", "C8L2", "C8L3", "C8L4", "C9L0", "C9L1", "C9L2", "C9L3", "C9L4"]
             self.srook = (PhotoImage(file= os.path.join('images', "sandR.png"))).subsample(2,2)
             self.imageS = self.can.create_image(50, 100, image= self.srook, tags='rook')
             self.can.addtag_withtag("sand", self.imageS)
@@ -131,11 +135,6 @@ class Game_Win:
         rook = ID
         self.selected_rook = (rook, event.x, event.y)
     def move(self,event):
-        self.squads = ("C0L0", "C0L1", "C0L2", "C0L3", "C0L4", "C1L0", "C1L1", "C1L2", "C1L3", "C1L4",
-                  "C2L0", "C2L1", "C2L2", "C2L3", "C2L4", "C3L0", "C3L1", "C3L2", "C3L3", "C3L4",
-                  "C4L0", "C4L1", "C4L2", "C4L3", "C4L4", "C5L0", "C5L1", "C5L2", "C5L3", "C5L4",
-                  "C6L0", "C6L1", "C6L2", "C6L3", "C6L4", "C7L0", "C7L1", "C7L2", "C7L3", "C7L4",
-                  "C8L0", "C8L1", "C8L2", "C8L3", "C8L4", "C9L0", "C9L1", "C9L2", "C9L3", "C9L4")
         x, y = event.x, event.y
         rook, x1, y1 = self.selected_rook
         self.can.move(rook, x-x1, y-y1)
@@ -214,70 +213,91 @@ class Game_Win:
         elif rook == "two":
             ID=self.identi1[0]
         over=self.can.coords(ID)
-        print(self.can.find_overlapping(over[0]-5, over[1], over[0]+20, over[1]+10)[0])
+        #print(self.can.find_overlapping(over[0]-5, over[1], over[0]+20, over[1]+10)[0])
         squad_id=self.can.find_overlapping(over[0], over[1], over[0]+20, over[1]+10)[0]
         color=(self.can.gettags(squad_id)[1])
         squad_id=(self.can.gettags(squad_id)[0])
-        #print(self.identi)
+        #print(self.squads[0], "ya")
+        #print(squad_id=='C0L0')
 
         #print(len(self.can.find_overlapping(over[0], over[1], over[2], over[3])))
-        if self.can.coords(self.squads[0])[0]-10<=over[0]<=self.can.coords(self.squads[0])[2] and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L0':
-            
+        if self.can.coords(self.squads[0])[0]-10<=over[0]<=self.can.coords(self.squads[0])[2] and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L0'and self.squads[0][-1]!="F":
+            full = self.squads[0]+"F"
+            self.can.addtag_withtag(full, self.squads[0])
+            self.squads[0] = full
             self.can.delete(ID)
             lis=(310,10, 365,65)
-            print (self.can.gettags(squad_id)[1])
-            
             self.create(rook, lis, "gaming", color)
-            #self.can.coords(ID, 310,10, 365,65)
-            #print((self.can.gettags(self.identi0[0])))
-            
-                
-        elif self.can.coords(self.squads[1])[0]-10<=over[0]<=self.can.coords(self.squads[1])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L1':
+            #self.can.coords(ID, 310,10, 365,65)       
+        elif self.can.coords(self.squads[1])[0]-10<=over[0]<=self.can.coords(self.squads[1])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L1'and self.squads[1][-1]!="F":
+            full = self.squads[1]+"F"
+            self.can.addtag_withtag(full, self.squads[1])
+            self.squads[1] = full
             self.can.delete(ID)
             lis = (385,10, 440,65)
             self.create(rook, lis, "gaming", color)
-
-        elif self.can.coords(self.squads[2])[0]-10<=over[0]<=self.can.coords(self.squads[2])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L2':
+        elif self.can.coords(self.squads[2])[0]-10<=over[0]<=self.can.coords(self.squads[2])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L2'and self.squads[2][-1]!="F":
+            full = self.squads[2]+"F"
+            self.can.addtag_withtag(full, self.squads[2])
+            self.squads[2] = full
             self.can.delete(ID)
             lis=(460,10, 515,65)
             self.create(rook, lis, "gaming", color)
-
-        elif self.can.coords(self.squads[3])[0]-10<=over[0]<=self.can.coords(self.squads[3])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L3':
+        elif self.can.coords(self.squads[3])[0]-10<=over[0]<=self.can.coords(self.squads[3])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L3'and self.squads[3][-1]!="F":
+            full = self.squads[3]+"F"
+            self.can.addtag_withtag(full, self.squads[3])
+            self.squads[3] = full
             self.can.delete(ID)
             lis=(535,10, 590,65)
             self.create(rook, lis, "gaming", color)
-
-        elif self.can.coords(self.squads[4])[0]-10<=over[0]<=self.can.coords(self.squads[4])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L4':
+        elif self.can.coords(self.squads[4])[0]-10<=over[0]<=self.can.coords(self.squads[4])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L4'and self.squads[4][-1]!="F":
+            full = self.squads[4]+"F"
+            self.can.addtag_withtag(full, self.squads[4])
+            self.squads[4] = full
             self.can.delete(ID)
             lis=(610,10, 665,65)
-            self.create(rook, lis, "gaming", color)
-            
-        elif self.can.coords(self.squads[5])[0]-10<=over[0]<=self.can.coords(self.squads[5])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L0':
+            self.create(rook, lis, "gaming", color)    
+        elif self.can.coords(self.squads[5])[0]-10<=over[0]<=self.can.coords(self.squads[5])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L0'and self.squads[5][-1]!="F":
+            full = self.squads[5]+"F"
+            self.can.addtag_withtag(full, self.squads[5])
+            self.squads[5] = full
             self.can.delete(ID)
             lis=(310,85, 365,140)
             self.create(rook, lis, "gaming", color)
-        elif self.can.coords(self.squads[6])[0]-10<=over[0]<=self.can.coords(self.squads[6])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L1':
+        elif self.can.coords(self.squads[6])[0]-10<=over[0]<=self.can.coords(self.squads[6])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L1'and self.squads[6][-1]!="F":
+            full = self.squads[6]+"F"
+            self.can.addtag_withtag(full, self.squads[6])
+            self.squads[6] = full
             self.can.delete(ID)
             lis=(385,85, 440,140)
             self.create(rook, lis, "gaming", color)
-        elif self.can.coords(self.squads[7])[0]-10<=over[0]<=self.can.coords(self.squads[7])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L2':
+        elif self.can.coords(self.squads[7])[0]-10<=over[0]<=self.can.coords(self.squads[7])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L2'and self.squads[7][-1]!="F":
+            full = self.squads[7]+"F"
+            self.can.addtag_withtag(full, self.squads[7])
+            self.squads[7] = full
             self.can.delete(ID)
             lis=(460,85, 515,140)
             self.create(rook, lis, "gaming", color)
-        elif self.can.coords(self.squads[8])[0]-10<=over[0]<=self.can.coords(self.squads[8])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L3':
+        elif self.can.coords(self.squads[8])[0]-10<=over[0]<=self.can.coords(self.squads[8])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L3'and self.squads[8][-1]!="F":
+            full = self.squads[8]+"F"
+            self.can.addtag_withtag(full, self.squads[8])
+            self.squads[8] = full
             self.can.delete(ID)
             lis=(535,85, 590,140)
             self.create(rook, lis, "gaming", color)
-        elif self.can.coords(self.squads[9])[0]-10<=over[0]<=self.can.coords(self.squads[9])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L4':
+        elif self.can.coords(self.squads[9])[0]-10<=over[0]<=self.can.coords(self.squads[9])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L4'and self.squads[9][-1]!="F":
+            full = self.squads[9]+"F"
+            self.can.addtag_withtag(full, self.squads[9])
+            self.squads[9] = full
             self.can.delete(ID)
             lis=(610,85, 665,140)
             self.create(rook, lis, "gaming", color)
 
         else:
             if rook == "one":
-                self.can.coords(ID, 0,0, 55,55)  
+                self.can.coords(ID, 50, 100)  
             elif rook == "two":
-                self.can.coords(ID, 0,100, 55,155)
+                self.can.coords(ID, 50, 180)
         
             
         
