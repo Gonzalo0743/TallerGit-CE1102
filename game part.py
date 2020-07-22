@@ -103,8 +103,13 @@ class Game_Win:
             self.rrook = (PhotoImage(file= os.path.join('images', "rockR.png"))).subsample(2,2)
             self.imageR = self.can.create_image(50, 180, image= self.rrook, tags='rook')
             self.can.addtag_withtag("rock", self.imageR)
+            self.frook = (PhotoImage(file= os.path.join('images', "fireR.png"))).subsample(2,2)
+            self.imageR = self.can.create_image(50, 260, image= self.frook, tags='rook')
+            self.can.addtag_withtag("fire", self.imageR)
             self.identi0= self.can.find_overlapping(50, 100, 100, 150)
             self.identi1= self.can.find_overlapping(50, 180, 100, 220)
+            self.identi2= self.can.find_overlapping(50, 260, 100, 310)
+            
             #self.can.tag_raise(self.identi[0])
             self.can.tag_bind(self.identi0[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi0[0]))
             self.can.tag_bind(self.identi0[0], "<Button1-Motion>", self.move)
@@ -112,6 +117,10 @@ class Game_Win:
             self.can.tag_bind(self.identi1[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi1[0]))
             self.can.tag_bind(self.identi1[0], "<Button1-Motion>", self.move)
             self.can.tag_bind(self.identi1[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"two"))
+            self.can.tag_bind(self.identi2[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi2[0]))
+            self.can.tag_bind(self.identi2[0], "<Button1-Motion>", self.move)
+            self.can.tag_bind(self.identi2[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"three"))
+            
             
             self.object_mo = None
         elif contli<=lines and color==0 and contco<=columm:
@@ -173,6 +182,11 @@ class Game_Win:
             dimage = Label(self.can, image=Tower, bg=color)
             dimage.image =  Tower
             dimage.place(x=place[0]+10, y=place[1]-5)
+        elif rook == "three":
+            Tower = (PhotoImage(file= os.path.join('images', "fireR.png"))).subsample(2,2)
+            dimage = Label(self.can, image=Tower, bg=color)
+            dimage.image =  Tower
+            dimage.place(x=place[0]+10, y=place[1])
         data = (rook, place, color)
         try:
             self.data= self.data + data
@@ -194,8 +208,13 @@ class Game_Win:
             self.rrook = (PhotoImage(file= os.path.join('images', "rockR.png"))).subsample(2,2)
             self.imageR = self.can.create_image(50, 180, image= self.rrook, tags='rook')
             self.can.addtag_withtag("rock", self.imageR)
+        elif rook== "three":
+            self.frook = (PhotoImage(file= os.path.join('images', "fireR.png"))).subsample(2,2)
+            self.imageR = self.can.create_image(50, 260, image= self.frook, tags='rook')
+            self.can.addtag_withtag("fire", self.imageR)
         self.identi0= self.can.find_overlapping(50, 100, 100, 150)
         self.identi1= self.can.find_overlapping(50, 180, 100, 220)
+        self.identi2= self.can.find_overlapping(50, 260, 100, 310)
         
             #print((self.can.gettags(self.identi0[0])))
         self.can.tag_bind(self.identi0[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi0[0]))
@@ -204,6 +223,9 @@ class Game_Win:
         self.can.tag_bind(self.identi1[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi1[0]))
         self.can.tag_bind(self.identi1[0], "<Button1-Motion>", self.move)
         self.can.tag_bind(self.identi1[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"two"))
+        self.can.tag_bind(self.identi2[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi2[0]))
+        self.can.tag_bind(self.identi2[0], "<Button1-Motion>", self.move)
+        self.can.tag_bind(self.identi2[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"three"))
         
 
     def new_position(self, event ,rook):
@@ -212,6 +234,8 @@ class Game_Win:
             ID=self.identi0[0]
         elif rook == "two":
             ID=self.identi1[0]
+        elif rook=="three":
+            ID=self.identi2[0]
         over=self.can.coords(ID)
         #print(self.can.find_overlapping(over[0]-5, over[1], over[0]+20, over[1]+10)[0])
         squad_id=self.can.find_overlapping(over[0], over[1], over[0]+20, over[1]+10)[0]
@@ -298,6 +322,10 @@ class Game_Win:
                 self.can.coords(ID, 50, 100)  
             elif rook == "two":
                 self.can.coords(ID, 50, 180)
+            elif rook == "three":
+                self.can.coords(ID, 50, 260)
+            elif rook == "four":
+                self.can.coords(ID, 50, 340)
         
             
         
