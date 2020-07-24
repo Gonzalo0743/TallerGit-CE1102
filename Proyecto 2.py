@@ -187,6 +187,9 @@ class Game_Win:
             self.identi1= self.can.find_overlapping(50, 180, 100, 220)
             self.identi2= self.can.find_overlapping(50, 260, 100, 310)
             self.identi3= self.can.find_overlapping(50, 340, 100, 390)
+        #################################################################################################################3
+            window.after(5000, lambda :self.avatars())
+            
             
             #self.can.tag_raise(self.identi[0])
             self.can.tag_bind(self.identi0[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi0[0]))
@@ -239,7 +242,12 @@ class Game_Win:
         elif contco<columm:
             return self.table(positions, columm, 4, color, "C"+str(int(name[1])+1)+"L0", 0, contco+1, saved)
         
-    
+    def avatars(self):
+        rpocition= random.randint(0,4):
+        self.squads[rpocition]
+        print(self.squads[rpocition])
+        self.archer = (PhotoImage(file= os.path.join('HWalk', "ArcherWalk1.png"))).subsample(2,2)
+        self.avaimage = self.can.create_image(20, 20, image= self.archer)#, tags='rook')
         
     def press_boton(self, event, ID):
         rook = ID
@@ -465,6 +473,8 @@ class Game_Win:
                 self.can.coords(ID, 50, 260)
             elif rook == "four":
                 self.can.coords(ID, 50, 340)
+        
+            
         
             
         
