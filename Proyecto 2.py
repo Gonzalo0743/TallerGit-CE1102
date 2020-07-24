@@ -82,14 +82,14 @@ class Game_Win:
                      ((300,600, 375,675),(375,600, 450,675),(450,600, 525,675),(525,600, 600,675),(600,600, 675,675)))
 
         #Coins Title
-        self.coins = 0
+        self.coins = 150
         self.coinslab = Label(self.can, text= "COINS:" + str(self.coins), font=("padauk book",20),fg="white",bg="black")
         self.coinslab.place(x=20,y=480,width=140,height=30)
         
 
         self.table(positions, len(positions), len(positions[0])-1, 0, "C0L0", 0,0, saved)
 
-        self.coinscount()
+        
 
 
    
@@ -165,6 +165,7 @@ class Game_Win:
                 self.load_game(rooks, 0, 1, 2)
                 #except:
                 #    nothing=0
+            self.coinscount()
             self.squads = ["C0L0", "C0L1", "C0L2", "C0L3", "C0L4", "C1L0", "C1L1", "C1L2", "C1L3", "C1L4",
                   "C2L0", "C2L1", "C2L2", "C2L3", "C2L4", "C3L0", "C3L1", "C3L2", "C3L3", "C3L4",
                   "C4L0", "C4L1", "C4L2", "C4L3", "C4L4", "C5L0", "C5L1", "C5L2", "C5L3", "C5L4",
@@ -189,37 +190,37 @@ class Game_Win:
             
             #self.can.tag_raise(self.identi[0])
             self.can.tag_bind(self.identi0[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi0[0]))
-            if self.coins >= 50:
+            #if self.coins >= 50:
                 
-                self.can.tag_bind(self.identi0[0], "<Button1-Motion>", self.move)
-                self.can.tag_bind(self.identi0[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"one"))
-                self.coins -= 50
-                self.coinslab.config(text="COINS:" + str(self.coins))
-                window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
+            self.can.tag_bind(self.identi0[0], "<Button1-Motion>", lambda event: self.move(event,"one"))
+            self.can.tag_bind(self.identi0[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"one"))
+            #self.coins -= 50
+            self.coinslab.config(text="COINS:" + str(self.coins))
+            #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
                              
-            if self.coins >= 100:
-                self.can.tag_bind(self.identi1[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi1[0]))
-                self.can.tag_bind(self.identi1[0], "<Button1-Motion>", self.move)
-                self.can.tag_bind(self.identi1[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"two"))
-                self.coins -= 100
-                self.coinslab.config(text="COINS:" + str(self.coins))
-                window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
+            
+            self.can.tag_bind(self.identi1[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi1[0]))
+            self.can.tag_bind(self.identi1[0], "<Button1-Motion>", lambda event: self.move(event,"two"))
+            self.can.tag_bind(self.identi1[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"two"))
+            #self.coins -= 100
+            self.coinslab.config(text="COINS:" + str(self.coins))
+                #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
+   
+            self.can.tag_bind(self.identi2[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi2[0]))
+            self.can.tag_bind(self.identi2[0], "<Button1-Motion>", lambda event: self.move(event,"three"))
+            self.can.tag_bind(self.identi2[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"three"))
+            #self.coins -= 150
+            self.coinslab.config(text="COINS:" + str(self.coins))
+                #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
 
-            if self.coins >= 150:    
-                self.can.tag_bind(self.identi2[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi2[0]))
-                self.can.tag_bind(self.identi2[0], "<Button1-Motion>", self.move)
-                self.can.tag_bind(self.identi2[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"three"))
-                self.coins -= 150
-                self.coinslab.config(text="COINS:" + str(self.coins))
-                window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
-
-            if self.coins >= 150:
-                self.can.tag_bind(self.identi3[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi3[0]))
-                self.can.tag_bind(self.identi3[0], "<Button1-Motion>", self.move)
-                self.can.tag_bind(self.identi3[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"four"))
-                self.coins -= 150
-                self.coinslab.config(text="COINS:" + str(self.coins))
-                window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
+            self.can.tag_bind(self.identi3[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi3[0]))
+            self.can.tag_bind(self.identi3[0], "<Button1-Motion>", lambda event: self.move(event,"four"))
+            self.can.tag_bind(self.identi3[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"four"))
+            #self.coins -= 150
+            self.coinslab.config(text="COINS:" + str(self.coins))
+            #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
+            #if self.coins== 0:
+                
             
             
             self.object_mo = None
@@ -243,11 +244,12 @@ class Game_Win:
     def press_boton(self, event, ID):
         rook = ID
         self.selected_rook = (rook, event.x, event.y)
-    def move(self,event):
-        x, y = event.x, event.y
-        rook, x1, y1 = self.selected_rook
-        self.can.move(rook, x-x1, y-y1)
-        self.selected_rook = (rook, x, y)
+    def move(self,event, tower):
+        if (tower == "one" and self.coins>=50) or (tower == "two" and self.coins>=100) or (tower == "three" and self.coins>=150) or (tower == "four" and self.coins>=150):
+            x, y = event.x, event.y
+            rook, x1, y1 = self.selected_rook
+            self.can.move(rook, x-x1, y-y1)
+            self.selected_rook = (rook, x, y)
         
         #self.new_position(squads, 0, x, y, rook)
     def load_game(self, rooks, rook, place, color):
@@ -328,49 +330,51 @@ class Game_Win:
         
             #print((self.can.gettags(self.identi0[0])))
         self.can.tag_bind(self.identi0[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi0[0]))
-        if self.coins >= 50:
                 
-                self.can.tag_bind(self.identi0[0], "<Button1-Motion>", self.move)
-                self.can.tag_bind(self.identi0[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"one"))
-                self.coins -= 50
-                self.coinslab.config(text="COINS:" + str(self.coins))
-                window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
+        self.can.tag_bind(self.identi0[0], "<Button1-Motion>", lambda event: self.move(event,"one"))
+        self.can.tag_bind(self.identi0[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"one"))
+            #    self.coins -= 50
+        self.coinslab.config(text="COINS:" + str(self.coins))
+                #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
                 
-        if self.coins >= 100:
-                self.can.tag_bind(self.identi1[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi1[0]))
-                self.can.tag_bind(self.identi1[0], "<Button1-Motion>", self.move)
-                self.can.tag_bind(self.identi1[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"two"))
-                self.coins -= 100
-                self.coinslab.config(text="COINS:" + str(self.coins))
-                window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
+        self.can.tag_bind(self.identi1[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi1[0]))
+        self.can.tag_bind(self.identi1[0], "<Button1-Motion>", lambda event: self.move(event,"two"))
+        self.can.tag_bind(self.identi1[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"two"))
+            #    self.coins -= 100
+        self.coinslab.config(text="COINS:" + str(self.coins))
+                #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
                 
-        if self.coins >= 150:    
-                self.can.tag_bind(self.identi2[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi2[0]))
-                self.can.tag_bind(self.identi2[0], "<Button1-Motion>", self.move)
-                self.can.tag_bind(self.identi2[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"three"))
-                self.coins -= 150
-                self.coinslab.config(text="COINS:" + str(self.coins))
-                window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
+  
+        self.can.tag_bind(self.identi2[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi2[0]))
+        self.can.tag_bind(self.identi2[0], "<Button1-Motion>", lambda event: self.move(event,"three"))
+        self.can.tag_bind(self.identi2[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"three"))
+            #    self.coins -= 150
+        self.coinslab.config(text="COINS:" + str(self.coins))
+                #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
                 
-        if self.coins >= 150:
-                self.can.tag_bind(self.identi3[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi3[0]))
-                self.can.tag_bind(self.identi3[0], "<Button1-Motion>", self.move)
-                self.can.tag_bind(self.identi3[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"four"))
-                self.coins -= 150
-                self.coinslab.config(text="COINS:" + str(self.coins))
-                window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
+
+        self.can.tag_bind(self.identi3[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi3[0]))
+        self.can.tag_bind(self.identi3[0], "<Button1-Motion>", lambda event: self.move(event,"four"))
+        self.can.tag_bind(self.identi3[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"four"))
+            #    self.coins -= 150
+        self.coinslab.config(text="COINS:" + str(self.coins))
+                #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
         
 
     def new_position(self, event ,rook):
         
         if rook=="one":
             ID=self.identi0[0]
+            self.coins-=50
         elif rook == "two":
             ID=self.identi1[0]
+            self.coins-=100
         elif rook=="three":
             ID=self.identi2[0]
+            self.coins-=150
         elif rook=="four":
             ID=self.identi3[0]
+            self.coins-=150
         over=self.can.coords(ID)
         #print(self.can.find_overlapping(over[0]-5, over[1], over[0]+20, over[1]+10)[0])
         squad_id=self.can.find_overlapping(over[0], over[1], over[0]+20, over[1]+10)[0]
