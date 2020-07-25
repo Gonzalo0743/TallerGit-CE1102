@@ -192,8 +192,7 @@ class Game_Win:
             if saved == "load":
                 #try:
                 pickle_file=open('data.pickle', 'rb')
-                rooks =pickle.load(pickle_file)
-                    
+                rooks =pickle.load(pickle_file) 
                 self.load_game(rooks, 0, 1, 2)
                 #except:
                 #    nothing=0
@@ -373,18 +372,18 @@ class Game_Win:
         #print(location[-4:])
         if location[-4:]=="cher":
             self.archer = (PhotoImage(file= os.path.join(location, image)))
-            self.avaimageA = self.can.create_image(x, y, image= self.archer)
+            self.avaimageA = self.can.create_image(x, y, image= self.archer, tags="arch")
         elif location[-4:]=="ight":
             self.knight = (PhotoImage(file= os.path.join(location, image)))
-            self.avaimageK = self.can.create_image(x, y, image= self.knight)
+            self.avaimageK = self.can.create_image(x, y, image= self.knight, tags="knig")
 
         elif location[-4:]=="ibal":
             self.cannibal = (PhotoImage(file= os.path.join(location, image)))
-            self.avaimageC = self.can.create_image(x, y, image= self.cannibal)
+            self.avaimageC = self.can.create_image(x, y, image= self.cannibal, tags="cann")
 
         elif location[-4:]=="jack":
             self.lumberjack = (PhotoImage(file= os.path.join(location, image)))
-            self.avaimageL = self.can.create_image(x, y, image= self.lumberjack)
+            self.avaimageL = self.can.create_image(x, y, image= self.lumberjack, tags="lumb")
     
         
     def press_boton(self, event, ID):
@@ -509,17 +508,21 @@ class Game_Win:
         if rook=="one":
             Spoints=(position[0]+30,position[1]+40, position[0]+20,position[1]+60,
                     position[0]+30,position[1]+70, position[0]+40,position[1]+60)
-            rang=self.can.find_enclosed(position[0]-2, position[1], position[2]-2, position[3]+800)
-            print(rang, "ra" )
-            if len(rang)> 0:
-                #print(Spoints)
+            self.rang=self.can.find_enclosed(position[0]-2, position[1], position[2]-2, position[3]+900)
+            print(len(self.rang), "ra" )
+            #print(self.can.gettags(rang[0])[0], "1")
+            
+            
+            if len(self.rang)> 0:
                 self.Sarrow =self.can.create_polygon(Spoints,width=1,outline="black", fill="darkorange3", tags= "Sarrow")
                 self.can.addtag_withtag("2", self.Sarrow)
                 #self.waste1 = self.can.create_polygon(points4,width=2,outline="black", fill="darkorange3", tags= "waste")
-                self.limit=Spoints[5]+200
+                self.can.after(3000,lambda : [self.shoot(rook, position)])
+                limit= position[3]+100
+                #if (len(rang)> 0 and len(rang)!=1) or (len(rang)==1 and (self.can.gettags(rang[0])[0]!= "Sarrow")) :
+
                 
-                
-                    
+                                
     def arrow_loop(self ,rook, position):
         
         self.movement(rook, position)
@@ -527,13 +530,31 @@ class Game_Win:
         
 
     def movement(self, rook, position):
-        self.can.move("Sarrow", 0, +5)
-        posc = self.can.coords(self.Sarrow)
-        #print(posc[5])
-        #print(self.limit)
-        if posc[5]>self.limit:
-            self.shoot(rook, position)
-                
+        
+        try:
+            
+            self.can.move("Sarrow", 0, +5)
+            arrow=self.can.find_withtag("Sarrow")[0]
+            posc = self.can.coords(self.Sarrow)
+            print(arrow)    
+            crash=self.can.bbox(arrow)
+            touch=self.can.find_overlapping(crash[0], crash[1], crash[2], crash[3])
+
+
+            if self.can.gettags(touch[-1])[0]=="arch" or self.can.gettags(touch[-1])[0]=="knig" or self.can.gettags(touch[-1])[0]=="cann" or self.can.gettags(touch[-1])[0]=="lumb":
+                self.can.delete(arrow)
+            
+            
+
+            if posc[5]>self.limit:
+                self.shoot(rook, position)
+
+        except:
+            try:
+                self.can.move("Sarrow", 0, +5)
+            except:
+                self.can.after(3000,lambda : [self.arrow_loop(rook, position)])
+
             
         
 
