@@ -293,7 +293,7 @@ class Game_Win:
         
         if avatar=="arch":
             x_a, y_a = x, y
-            self.archer = (PhotoImage(file= os.path.join('images/Archer/Walk/ArcherWalk1.png')))
+            self.archer = (PhotoImage(file= os.path.join('images/Archer', "Walk1.png")))
             self.avaimageA = self.can.create_image(x_a, y_a, image= self.archer, tags="arch")
             self.can.addtag_withtag("alive", self.avaimageA)
             print (self.can.gettags(self.avaimageA))
@@ -302,7 +302,7 @@ class Game_Win:
         elif avatar=="knig":
             x_k, y_k = x, y
             #print(x_a)
-            self.knight = (PhotoImage(file= os.path.join('images/Knight/Walk/KnightWalk1.png')))
+            self.knight = (PhotoImage(file= os.path.join('images/Knight', "Walk1.png")))
             self.avaimageK = self.can.create_image(x_k, y_k, image= self.knight, tags="knig")
             self.can.addtag_withtag("alive", self.avaimageK)
             print (self.can.gettags(self.avaimageK))
@@ -312,12 +312,12 @@ class Game_Win:
     def walk(self, avatar, y, x):
         
         if avatar=="arch":
-            window.after(1000, lambda: [self.can.delete(self.avaimageA), self.walk1('images/Archer/Walk/ArcherWalk2.png', y-30, x)])
-            window.after(1500, lambda: [self.can.delete(self.avaimageA), self.walk1('images/Archer/Walk/ArcherWalk3.png', y-60, x)])
+            window.after(1000, lambda: [self.can.delete(self.avaimageA), self.walk1('images/Archer', "Walk2.png", y-30, x)])
+            window.after(1500, lambda: [self.can.delete(self.avaimageA), self.walk1('images/Archer', "Walk3.png", y-60, x)])
             window.after(2000, lambda: [self.can.delete(self.avaimageA), self.move_ava(avatar, y-75, x)])
         elif avatar=="knig":
-            window.after(1000, lambda: [self.can.delete(self.avaimageK), self.walk1('images/Knight/Walk/KnightWalk2.png', y-30, x)])
-            window.after(2000, lambda: [self.can.delete(self.avaimageK), self.walk1('images/Knight/Walk/KnightWalk3.png', y-60, x)])
+            window.after(1000, lambda: [self.can.delete(self.avaimageK), self.walk1('images/Knight', "Walk2.png", y-30, x)])
+            window.after(2000, lambda: [self.can.delete(self.avaimageK), self.walk1('images/Knight', "Walk3.png", y-60, x)])
             window.after(3000, lambda: [self.can.delete(self.avaimageK), self.move_ava(avatar, y-75, x)])
                                         
 
@@ -327,7 +327,8 @@ class Game_Win:
             self.archer = (PhotoImage(file= os.path.join(location, image)))
             self.avaimage = self.can.create_image(x, y, image= self.archer)
         elif location[-4:]=="ight":
-            self.knight = (PhotoImage(file= os.path.join(location, image)))    
+            self.knight = (PhotoImage(file= os.path.join(location, image)))
+            self.avaimageK = self.can.create_image(x, y, image= self.knight)    
         
     
         
