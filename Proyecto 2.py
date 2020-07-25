@@ -221,10 +221,8 @@ class Game_Win:
 
             
 
-            window.after(3000, lambda :self.arch_avatar())
-            window.after(3000, lambda :self.kng_avatar())
-            window.after(3000, lambda :self.cann_avatar())
-            window.after(3000, lambda :self.lumb_avatar())
+            
+    
             
             #self.can.tag_raise(self.identi[0])
             self.can.tag_bind(self.identi0[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi0[0]))
@@ -258,6 +256,10 @@ class Game_Win:
             self.coinslab.config(text="COINS:" + str(self.coins))
             #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
             #if self.coins== 0:
+
+            self.create_avatar()
+
+            
                 
             
             
@@ -276,6 +278,15 @@ class Game_Win:
             return self.table(positions, columm, lines, 0, name[:-1] + str(int(name[3])+ 1), contli+1, contco, saved)
         elif contco<columm:
             return self.table(positions, columm, 4, color, "C"+str(int(name[1])+1)+"L0", 0, contco+1, saved)
+
+    def create_avatar(self):
+           
+        window.after(3000, lambda :self.arch_avatar())
+        window.after(10000, lambda :self.kng_avatar())
+        window.after(20000, lambda :self.cann_avatar())
+        window.after(30000, lambda :self.lumb_avatar())
+        window.after(50000, lambda :self.create_avatar())
+            
 
     def kng_avatar(self):
         rpocition= random.randint(0,4)
@@ -315,6 +326,7 @@ class Game_Win:
             #print (self.can.gettags(self.avaimageA))
             if self.can.gettags(self.avaimageA)[1] == "alive":
                 window.after(1000, lambda: [self.walk("arch", y_a, x_a)])
+                
         elif avatar=="knig":
             x_k, y_k = x, y
             #print(x_a)
@@ -416,6 +428,7 @@ class Game_Win:
         pickle_file=open('data.pickle', 'rb')
         data= pickle.load(pickle_file)
         print(data)
+        
     def create(self, rook, place, info, color):
         if rook == "one":
             Tower = (PhotoImage(file= os.path.join('images', "sandR.png"))).subsample(2,2)
@@ -504,6 +517,8 @@ class Game_Win:
             #    self.coins -= 150
         self.coinslab.config(text="COINS:" + str(self.coins))
                 #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
+
+        
     def shoot(self, rook, position):
         if rook=="one":
             Spoints=(position[0]+30,position[1]+40, position[0]+20,position[1]+60,
@@ -517,10 +532,27 @@ class Game_Win:
                 self.Sarrow =self.can.create_polygon(Spoints,width=1,outline="black", fill="darkorange3", tags= "Sarrow")
                 self.can.addtag_withtag("2", self.Sarrow)
                 #self.waste1 = self.can.create_polygon(points4,width=2,outline="black", fill="darkorange3", tags= "waste")
+<<<<<<< HEAD
                 self.can.after(3000,lambda : [self.shoot(rook, position)])
                 limit= position[3]+100
                 #if (len(rang)> 0 and len(rang)!=1) or (len(rang)==1 and (self.can.gettags(rang[0])[0]!= "Sarrow")) :
 
+=======
+                self.limit=Spoints[5]+200
+
+        if rook=="two":
+            Spoints=(position[0]+30,position[1]+40, position[0]+20,position[1]+60,
+                    position[0]+30,position[1]+70, position[0]+40,position[1]+60)
+            rang=self.can.find_enclosed(position[0]-2, position[1], position[2]-2, position[3]+800)
+            print(rang, "ra" )
+            if len(rang)> 0:
+                #print(Spoints)
+                self.Sarrow =self.can.create_polygon(Spoints,width=1,outline="black", fill="gray40", tags= "Sarrow")
+                self.can.addtag_withtag("2", self.Sarrow)
+                #self.waste1 = self.can.create_polygon(points4,width=2,outline="black", fill="darkorange3", tags= "waste")
+                self.limit=Spoints[5]+200
+                
+>>>>>>> 06fc5abcafe4544a906afaa9b955d9319203d51d
                 
                                 
     def arrow_loop(self ,rook, position):
