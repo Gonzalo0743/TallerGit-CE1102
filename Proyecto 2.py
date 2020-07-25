@@ -23,7 +23,7 @@ class Home_Window:
     def __init__(self, inself):
         global name
         #Main Window
-        self.canvas = Canvas( width = 800, height = 700,
+        self.canvas = Canvas(width = 800, height = 700,
                              highlightthickness = 0, relief='ridge')
         self.canvas.place(x=0,y=0)
 
@@ -222,6 +222,8 @@ class Game_Win:
 
             window.after(3000, lambda :self.arch_avatar())
             window.after(3000, lambda :self.kng_avatar())
+            window.after(3000, lambda :self.cann_avatar())
+            window.after(3000, lambda :self.lumb_avatar())
             
             #self.can.tag_raise(self.identi[0])
             self.can.tag_bind(self.identi0[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi0[0]))
@@ -275,20 +277,33 @@ class Game_Win:
             return self.table(positions, columm, 4, color, "C"+str(int(name[1])+1)+"L0", 0, contco+1, saved)
 
     def kng_avatar(self):
-        print("ho")
         rpocition= random.randint(0,4)
         place=self.squads2[6][rpocition]
         x=place[2]-33
         y=place[3]-35
         self.move_ava("knig", y, x)
+        
     def arch_avatar(self):
         rpocition= random.randint(0,4)
         place=self.squads2[6][rpocition]
         x=place[2]-33
         y=place[3]-35
-        
-        
         self.move_ava("arch", y, x)
+
+    def cann_avatar(self):
+        rpocition= random.randint(0,4)
+        place=self.squads2[6][rpocition]
+        x=place[2]-33
+        y=place[3]-35
+        self.move_ava("cann", y, x)
+
+    def lumb_avatar(self):
+        rpocition= random.randint(0,4)
+        place=self.squads2[6][rpocition]
+        x=place[2]-33
+        y=place[3]-35
+        self.move_ava("lumb", y, x)
+        
     def move_ava(self, avatar, y, x):
         
         if avatar=="arch":
@@ -308,6 +323,27 @@ class Game_Win:
             print (self.can.gettags(self.avaimageK))
             if self.can.gettags(self.avaimageK)[1] == "alive":
                 window.after(1000, lambda: [self.walk("knig", y_k, x_k)])
+                
+        elif avatar=="cann":
+            x_q, y_w = x, y
+            #print(x_a)
+            self.cannibal = (PhotoImage(file= os.path.join('images/Cannibal', "Walk1.png")))
+            self.avaimageC = self.can.create_image(x_q, y_w, image= self.cannibal, tags="cann")
+            self.can.addtag_withtag("alive", self.avaimageC)
+            print (self.can.gettags(self.avaimageC))
+            if self.can.gettags(self.avaimageC)[1] == "alive":
+                window.after(1000, lambda: [self.walk("cann", y_w, x_q)])
+
+        elif avatar=="lumb":
+            x_h, y_j = x, y
+            #print(x_a)
+            self.lumberjack = (PhotoImage(file= os.path.join('images/Lumberjack', "Walk1.png")))
+            self.avaimageL = self.can.create_image(x_h, y_j, image= self.lumberjack, tags="lumb")
+            self.can.addtag_withtag("alive", self.avaimageL)
+            print (self.can.gettags(self.avaimageL))
+            if self.can.gettags(self.avaimageL)[1] == "alive":
+                window.after(1000, lambda: [self.walk("lumb", y_j, x_h)])
+        
             
     def walk(self, avatar, y, x):
         
@@ -319,17 +355,34 @@ class Game_Win:
             window.after(1000, lambda: [self.can.delete(self.avaimageK), self.walk1('images/Knight', "Walk2.png", y-30, x)])
             window.after(2000, lambda: [self.can.delete(self.avaimageK), self.walk1('images/Knight', "Walk3.png", y-60, x)])
             window.after(3000, lambda: [self.can.delete(self.avaimageK), self.move_ava(avatar, y-75, x)])
+
+        elif avatar=="cann":
+            window.after(1000, lambda: [self.can.delete(self.avaimageC), self.walk1('images/Cannibal', "Walk2.png", y-30, x)])
+            window.after(2000, lambda: [self.can.delete(self.avaimageC), self.walk1('images/Cannibal', "Walk3.png", y-60, x)])
+            window.after(3000, lambda: [self.can.delete(self.avaimageC), self.move_ava(avatar, y-75, x)])
+
+        elif avatar=="lumb":
+            window.after(1000, lambda: [self.can.delete(self.avaimageL), self.walk1('images/Lumberjack', "Walk2.png", y-30, x)])
+            window.after(2000, lambda: [self.can.delete(self.avaimageL), self.walk1('images/Lumberjack', "Walk3.png", y-60, x)])
+            window.after(3000, lambda: [self.can.delete(self.avaimageL), self.move_ava(avatar, y-75, x)])
                                         
 
     def walk1(self, location, image, y, x):
         print(location[-4:])
         if location[-4:]=="cher":
             self.archer = (PhotoImage(file= os.path.join(location, image)))
-            self.avaimage = self.can.create_image(x, y, image= self.archer)
+            self.avaimageA = self.can.create_image(x, y, image= self.archer)
         elif location[-4:]=="ight":
             self.knight = (PhotoImage(file= os.path.join(location, image)))
-            self.avaimageK = self.can.create_image(x, y, image= self.knight)    
-        
+            self.avaimageK = self.can.create_image(x, y, image= self.knight)
+
+        elif location[-4:]=="ibal":
+            self.cannibal = (PhotoImage(file= os.path.join(location, image)))
+            self.avaimageC = self.can.create_image(x, y, image= self.cannibal)
+
+        elif location[-4:]=="jack":
+            self.lumberjack = (PhotoImage(file= os.path.join(location, image)))
+            self.avaimageL = self.can.create_image(x, y, image= self.lumberjack)
     
         
     def press_boton(self, event, ID):
