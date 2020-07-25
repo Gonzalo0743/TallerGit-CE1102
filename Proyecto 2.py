@@ -532,27 +532,27 @@ class Game_Win:
                 self.Sarrow =self.can.create_polygon(Spoints,width=1,outline="black", fill="darkorange3", tags= "Sarrow")
                 self.can.addtag_withtag("2", self.Sarrow)
                 #self.waste1 = self.can.create_polygon(points4,width=2,outline="black", fill="darkorange3", tags= "waste")
-<<<<<<< HEAD
-                self.can.after(3000,lambda : [self.shoot(rook, position)])
+
+                #self.can.after(3000,lambda : [self.shoot(rook, position)])
                 limit= position[3]+100
                 #if (len(rang)> 0 and len(rang)!=1) or (len(rang)==1 and (self.can.gettags(rang[0])[0]!= "Sarrow")) :
 
-=======
+
                 self.limit=Spoints[5]+200
 
         if rook=="two":
-            Spoints=(position[0]+30,position[1]+40, position[0]+20,position[1]+60,
+            Rpoints=(position[0]+30,position[1]+40, position[0]+20,position[1]+60,
                     position[0]+30,position[1]+70, position[0]+40,position[1]+60)
             rang=self.can.find_enclosed(position[0]-2, position[1], position[2]-2, position[3]+800)
             print(rang, "ra" )
             if len(rang)> 0:
                 #print(Spoints)
-                self.Sarrow =self.can.create_polygon(Spoints,width=1,outline="black", fill="gray40", tags= "Sarrow")
-                self.can.addtag_withtag("2", self.Sarrow)
+                self.Rarrow =self.can.create_polygon(Rpoints,width=1,outline="black", fill="gray40", tags= "Rarrow")
+                self.can.addtag_withtag("4", self.Rarrow)
                 #self.waste1 = self.can.create_polygon(points4,width=2,outline="black", fill="darkorange3", tags= "waste")
                 self.limit=Spoints[5]+200
                 
->>>>>>> 06fc5abcafe4544a906afaa9b955d9319203d51d
+
                 
                                 
     def arrow_loop(self ,rook, position):
@@ -586,6 +586,31 @@ class Game_Win:
                 self.can.move("Sarrow", 0, +5)
             except:
                 self.can.after(3000,lambda : [self.arrow_loop(rook, position)])
+    def movement2(self,rook, position):
+        try:
+            
+            self.can.move("Rarrow", 0, +5)
+            arrow=self.can.find_withtag("Rarrow")[0]
+            posc = self.can.coords(self.Rarrow)
+            print(arrow)    
+            crash=self.can.bbox(arrow)
+            touch=self.can.find_overlapping(crash[0], crash[1], crash[2], crash[3])
+
+
+            if self.can.gettags(touch[-1])[0]=="arch" or self.can.gettags(touch[-1])[0]=="knig" or self.can.gettags(touch[-1])[0]=="cann" or self.can.gettags(touch[-1])[0]=="lumb":
+                self.can.delete(arrow)
+            
+            
+
+            if posc[5]>self.limit:
+                self.shoot(rook, position)
+
+        except:
+            try:
+                self.can.move("Sarrow", 0, +5)
+            except:
+                self.can.after(3000,lambda : [self.arrow_loop(rook, position)])
+        
 
             
         
