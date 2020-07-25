@@ -1,9 +1,9 @@
 from tkinter import *
 import tkinter as tk
-import os
 import winsound
 import random
 import pickle
+import os
 
 
 class Open_Window:
@@ -40,7 +40,7 @@ class Home_Window:
         self.load = Button(self.canvas, text = "LOAD GAME", font=("padauk book",28),fg="white",bg="black",borderwidth=0, command = lambda: [self.del_win(), inself.switch_frame(Game_Win, "load")])
         self.load.place(x=295,y=260,width=250,height=50)
 
-        self.instructions = Button(self.canvas, text = "INSTRUCTIONS", font=("padauk book",28),fg="white",bg="black",borderwidth=0)
+        self.instructions = Button(self.canvas, text = "INSTRUCTIONS", font=("padauk book",28),fg="white",bg="black",borderwidth=0, command = self.instructions)
         self.instructions.place(x=275,y=330,width=290,height=50)
 
         self.highscores = Button(self.canvas, text = "HIGHSCORES", font=("padauk book",28),fg="white",bg="black",borderwidth=0)
@@ -52,6 +52,8 @@ class Home_Window:
     #Buttons Pressed
     def game(self):
         Game_Win(inself)
+    def instructions(self):
+        Instructions_Win()
     def credits(self):
         Credits_Win()
     def del_win(self):
@@ -79,7 +81,78 @@ class Game_Win:
                      ((300,525, 375,600),(375,525, 450,600),(450,525, 525,600),(525,525, 600,600),(600,525, 675,600)),
                      ((300,600, 375,675),(375,600, 450,675),(450,600, 525,675),(525,600, 600,675),(600,600, 675,675)))
 
+        #Coins Title
+        self.coins = 0
+        self.coinslab = Label(self.can, text= "COINS:" + str(self.coins), font=("padauk book",20),fg="white",bg="black")
+        self.coinslab.place(x=20,y=480,width=140,height=30)
+        
+
         self.table(positions, len(positions), len(positions[0])-1, 0, "C0L0", 0,0, saved)
+
+        
+
+
+   
+    def coinscount(self):
+        #Loading images
+        print(self.coins)
+        self.coppercoin = PhotoImage(file = "images\CopperCoin.png")
+        self.goldcoin = PhotoImage(file = "images\GoldCoin.png")
+        self.silvercoin = PhotoImage(file = "images\SilverCoin.png")
+        
+        
+        self.squads2 = (((300,150, 375,225),(375,150, 450,225),(450,150, 525,225),(525,150, 600,225),(600,150, 675,225)),
+                     ((300,225, 375,300),(375,225, 450,300),(450,225, 525,300),(525,225, 600,300),(600,225, 675,300)),
+                     ((300,300, 375,375),(375,300, 450,375),(450,300, 525,375),(525,300, 600,375),(600,300, 675,375)),
+                     ((300,375, 375,450),(375,375, 450,450),(450,375, 525,450),(525,375, 600,450),(600,375, 675,450)),
+                     ((300,450, 375,525),(375,450, 450,525),(450,450, 525,525),(525,450, 600,525),(600,450, 675,525)),
+                     ((300,525, 375,600),(375,525, 450,600),(450,525, 525,600),(525,525, 600,600),(600,525, 675,600)),
+                     ((300,600, 375,675),(375,600, 450,675),(450,600, 525,675),(525,600, 600,675),(600,600, 675,675)))
+        
+        self.num = random.randint(1,10)
+
+        
+        #Copper Coin Appears
+        if self.num == 1 or self.num == 2 or self.num == 3 or self.num == 4 or self.num==5:
+            self.xcord = random.choice((340,415,490,565,640))
+            self.ycord = random.choice((150,225,300,375,450,525,600))
+            self.coin = self.can.create_image(self.xcord,self.ycord, anchor=N, image=self.coppercoin)
+            self.can.tag_bind(self.coin, "<Button-1>", lambda event: self.press_coppercoin(event,self.coin))
+
+            
+        #Silver Coin Appears
+        if self.num == 6 or self.num == 7 or self.num == 8:
+            self.xcord = random.choice((340,415,490,565,640))
+            self.ycord = random.choice((150,225,300,375,450,525,600))
+            self.coin = self.can.create_image(self.xcord,self.ycord, anchor=N, image=self.silvercoin)
+            self.can.tag_bind(self.coin, "<Button-1>", lambda event: self.press_silvercoin(event,self.coin))
+
+        #Gold Coin Appears
+        if self.num == 9 or self.num == 10:
+            self.xcord = random.choice((340,415,490,565,640))
+            self.ycord = random.choice((150,225,300,375,450,525,600))
+            self.coin = self.can.create_image(self.xcord,self.ycord, anchor=N, image=self.goldcoin)
+            self.can.tag_bind(self.coin, "<Button-1>", lambda event: self.press_goldcoin(event,self.coin))
+
+    def press_coppercoin(self,event,coin):
+        self.coins += 25
+        self.coinslab.config(text="COINS:" + str(self.coins))
+        self.can.delete(coin)
+        window.after(7000,self.coinscount)
+
+    def press_silvercoin(self,event,coin):
+        self.coins += 50
+        self.coinslab.config(text="COINS:" + str(self.coins))
+        self.can.delete(coin)
+        window.after(7000,self.coinscount)
+
+    def press_goldcoin(self,event,coin):
+        self.coins += 100
+        self.coinslab.config(text="COINS:" + str(self.coins))
+        self.can.delete(coin)
+        window.after(7000,self.coinscount)
+
+        
     def table(self, positions, columm, lines, color, name, contli, contco, saved):
         
         #self.identi= self.can.find_overlapping(0, 0, 55, 200)
@@ -92,6 +165,7 @@ class Game_Win:
                 self.load_game(rooks, 0, 1, 2)
                 #except:
                 #    nothing=0
+            self.coinscount()
             self.squads = ["C0L0", "C0L1", "C0L2", "C0L3", "C0L4", "C1L0", "C1L1", "C1L2", "C1L3", "C1L4",
                   "C2L0", "C2L1", "C2L2", "C2L3", "C2L4", "C3L0", "C3L1", "C3L2", "C3L3", "C3L4",
                   "C4L0", "C4L1", "C4L2", "C4L3", "C4L4", "C5L0", "C5L1", "C5L2", "C5L3", "C5L4",
@@ -113,20 +187,45 @@ class Game_Win:
             self.identi1= self.can.find_overlapping(50, 180, 100, 220)
             self.identi2= self.can.find_overlapping(50, 260, 100, 310)
             self.identi3= self.can.find_overlapping(50, 340, 100, 390)
+        #################################################################################################################3
+            window.after(3000, lambda :self.arch_avatar())
+            window.after(3000, lambda :self.kng_avatar())
+            
+            
             
             #self.can.tag_raise(self.identi[0])
             self.can.tag_bind(self.identi0[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi0[0]))
-            self.can.tag_bind(self.identi0[0], "<Button1-Motion>", self.move)
+            #if self.coins >= 50:
+                
+            self.can.tag_bind(self.identi0[0], "<Button1-Motion>", lambda event: self.move(event,"one"))
             self.can.tag_bind(self.identi0[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"one"))
+            #self.coins -= 50
+            self.coinslab.config(text="COINS:" + str(self.coins))
+            #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
+                             
+            
             self.can.tag_bind(self.identi1[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi1[0]))
-            self.can.tag_bind(self.identi1[0], "<Button1-Motion>", self.move)
+            self.can.tag_bind(self.identi1[0], "<Button1-Motion>", lambda event: self.move(event,"two"))
             self.can.tag_bind(self.identi1[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"two"))
+            #self.coins -= 100
+            self.coinslab.config(text="COINS:" + str(self.coins))
+                #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
+   
             self.can.tag_bind(self.identi2[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi2[0]))
-            self.can.tag_bind(self.identi2[0], "<Button1-Motion>", self.move)
+            self.can.tag_bind(self.identi2[0], "<Button1-Motion>", lambda event: self.move(event,"three"))
             self.can.tag_bind(self.identi2[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"three"))
+            #self.coins -= 150
+            self.coinslab.config(text="COINS:" + str(self.coins))
+                #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
+
             self.can.tag_bind(self.identi3[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi3[0]))
-            self.can.tag_bind(self.identi3[0], "<Button1-Motion>", self.move)
+            self.can.tag_bind(self.identi3[0], "<Button1-Motion>", lambda event: self.move(event,"four"))
             self.can.tag_bind(self.identi3[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"four"))
+            #self.coins -= 150
+            self.coinslab.config(text="COINS:" + str(self.coins))
+            #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
+            #if self.coins== 0:
+                
             
             
             self.object_mo = None
@@ -144,17 +243,77 @@ class Game_Win:
             return self.table(positions, columm, lines, 0, name[:-1] + str(int(name[3])+ 1), contli+1, contco, saved)
         elif contco<columm:
             return self.table(positions, columm, 4, color, "C"+str(int(name[1])+1)+"L0", 0, contco+1, saved)
+    def kng_avatar(self):
+        print("ho")
+        rpocition= random.randint(0,4)
+        place=self.squads2[6][rpocition]
+        x=place[2]-33
+        y=place[3]-35
+        self.move_ava("knig", y, x)
+    def arch_avatar(self):
+        rpocition= random.randint(0,4)
+        place=self.squads2[6][rpocition]
+        x=place[2]-33
+        y=place[3]-35
         
-    
+        
+        self.move_ava("arch", y, x)
+    def move_ava(self, avatar, y, x):
+        
+        if avatar=="arch":
+            x_a, y_a = x, y
+            self.archer = (PhotoImage(file= os.path.join('images/Archer', "Walk1.png")))
+            self.avaimageA = self.can.create_image(x_a, y_a, image= self.archer, tags="arch")
+            self.can.addtag_withtag("alive", self.avaimageA)
+            print (self.can.gettags(self.avaimageA))
+            if self.can.gettags(self.avaimageA)[1] == "alive":
+                window.after(1000, lambda: [self.walk("arch", y_a, x_a)])
+        elif avatar=="knig":
+            x_k, y_k = x, y
+            #print(x_a)
+            self.knight = (PhotoImage(file= os.path.join('images/Knight', "Walk1.png")))
+            self.avaimageK = self.can.create_image(x_k, y_k, image= self.knight, tags="knig")
+            self.can.addtag_withtag("alive", self.avaimageK)
+            print (self.can.gettags(self.avaimageK))
+            if self.can.gettags(self.avaimageK)[1] == "alive":
+                window.after(1000, lambda: [self.walk("knig", y_k, x_k)])
+            
+    def walk(self, avatar, y, x):
+        
+        if avatar=="arch":
+            window.after(1000, lambda: [self.can.delete(self.avaimageA), self.walk1('images/Archer', "Walk2.png", y-30, x)])
+            window.after(1500, lambda: [self.can.delete(self.avaimageA), self.walk1('images/Archer', "Walk3.png", y-60, x)])
+            window.after(2000, lambda: [self.can.delete(self.avaimageA), self.move_ava(avatar, y-75, x)])
+        elif avatar=="knig":
+            window.after(1000, lambda: [self.can.delete(self.avaimageK), self.walk1('images/Knight', "Walk2.png", y-30, x)])
+            window.after(2000, lambda: [self.can.delete(self.avaimageK), self.walk1('images/Knight', "Walk3.png", y-60, x)])
+            window.after(3000, lambda: [self.can.delete(self.avaimageK), self.move_ava(avatar, y-75, x)])
+                                        
+
+    def walk1(self, location, image, y, x):
+        print(location[-4:])
+        if location[-4:]=="cher":
+            self.archer = (PhotoImage(file= os.path.join(location, image)))
+            self.avaimage = self.can.create_image(x, y, image= self.archer)
+        elif location[-4:]=="ight":
+            self.knight = (PhotoImage(file= os.path.join(location, image)))
+            self.avaimageK = self.can.create_image(x, y, image= self.knight)
+            
+            
+            
+                
+
+
         
     def press_boton(self, event, ID):
         rook = ID
         self.selected_rook = (rook, event.x, event.y)
-    def move(self,event):
-        x, y = event.x, event.y
-        rook, x1, y1 = self.selected_rook
-        self.can.move(rook, x-x1, y-y1)
-        self.selected_rook = (rook, x, y)
+    def move(self,event, tower):
+        if (tower == "one" and self.coins>=50) or (tower == "two" and self.coins>=100) or (tower == "three" and self.coins>=150) or (tower == "four" and self.coins>=150):
+            x, y = event.x, event.y
+            rook, x1, y1 = self.selected_rook
+            self.can.move(rook, x-x1, y-y1)
+            self.selected_rook = (rook, x, y)
         
         #self.new_position(squads, 0, x, y, rook)
     def load_game(self, rooks, rook, place, color):
@@ -235,119 +394,537 @@ class Game_Win:
         
             #print((self.can.gettags(self.identi0[0])))
         self.can.tag_bind(self.identi0[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi0[0]))
-        self.can.tag_bind(self.identi0[0], "<Button1-Motion>", self.move)
+                
+        self.can.tag_bind(self.identi0[0], "<Button1-Motion>", lambda event: self.move(event,"one"))
         self.can.tag_bind(self.identi0[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"one"))
+            #    self.coins -= 50
+        self.coinslab.config(text="COINS:" + str(self.coins))
+                #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
+                
         self.can.tag_bind(self.identi1[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi1[0]))
-        self.can.tag_bind(self.identi1[0], "<Button1-Motion>", self.move)
+        self.can.tag_bind(self.identi1[0], "<Button1-Motion>", lambda event: self.move(event,"two"))
         self.can.tag_bind(self.identi1[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"two"))
+            #    self.coins -= 100
+        self.coinslab.config(text="COINS:" + str(self.coins))
+                #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
+                
+  
         self.can.tag_bind(self.identi2[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi2[0]))
-        self.can.tag_bind(self.identi2[0], "<Button1-Motion>", self.move)
+        self.can.tag_bind(self.identi2[0], "<Button1-Motion>", lambda event: self.move(event,"three"))
         self.can.tag_bind(self.identi2[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"three"))
+            #    self.coins -= 150
+        self.coinslab.config(text="COINS:" + str(self.coins))
+                #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
+                
+
         self.can.tag_bind(self.identi3[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi3[0]))
-        self.can.tag_bind(self.identi3[0], "<Button1-Motion>", self.move)
+        self.can.tag_bind(self.identi3[0], "<Button1-Motion>", lambda event: self.move(event,"four"))
         self.can.tag_bind(self.identi3[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"four"))
+            #    self.coins -= 150
+        self.coinslab.config(text="COINS:" + str(self.coins))
+                #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
         
 
     def new_position(self, event ,rook):
         
-        if rook=="one":
-            ID=self.identi0[0]
-        elif rook == "two":
-            ID=self.identi1[0]
-        elif rook=="three":
-            ID=self.identi2[0]
-        elif rook=="four":
-            ID=self.identi3[0]
-        over=self.can.coords(ID)
-        #print(self.can.find_overlapping(over[0]-5, over[1], over[0]+20, over[1]+10)[0])
-        squad_id=self.can.find_overlapping(over[0], over[1], over[0]+20, over[1]+10)[0]
-        color=(self.can.gettags(squad_id)[1])
-        squad_id=(self.can.gettags(squad_id)[0])
-        #print(self.squads[0], "ya")
-        #print(squad_id=='C0L0')
+        if (rook == "one" and self.coins>=50) or (rook == "two" and self.coins>=100) or (rook == "three" and self.coins>=150) or (rook == "four" and self.coins>=150):
 
-        #print(len(self.can.find_overlapping(over[0], over[1], over[2], over[3])))
-        if self.can.coords(self.squads[0])[0]-10<=over[0]<=self.can.coords(self.squads[0])[2] and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L0'and self.squads[0][-1]!="F":
-            full = self.squads[0]+"F"
-            self.can.addtag_withtag(full, self.squads[0])
-            self.squads[0] = full
-            self.can.delete(ID)
-            lis=(310,10, 365,65)
-            self.create(rook, lis, "gaming", color)
-            #self.can.coords(ID, 310,10, 365,65)       
-        elif self.can.coords(self.squads[1])[0]-10<=over[0]<=self.can.coords(self.squads[1])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L1'and self.squads[1][-1]!="F":
-            full = self.squads[1]+"F"
-            self.can.addtag_withtag(full, self.squads[1])
-            self.squads[1] = full
-            self.can.delete(ID)
-            lis = (385,10, 440,65)
-            self.create(rook, lis, "gaming", color)
-        elif self.can.coords(self.squads[2])[0]-10<=over[0]<=self.can.coords(self.squads[2])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L2'and self.squads[2][-1]!="F":
-            full = self.squads[2]+"F"
-            self.can.addtag_withtag(full, self.squads[2])
-            self.squads[2] = full
-            self.can.delete(ID)
-            lis=(460,10, 515,65)
-            self.create(rook, lis, "gaming", color)
-        elif self.can.coords(self.squads[3])[0]-10<=over[0]<=self.can.coords(self.squads[3])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L3'and self.squads[3][-1]!="F":
-            full = self.squads[3]+"F"
-            self.can.addtag_withtag(full, self.squads[3])
-            self.squads[3] = full
-            self.can.delete(ID)
-            lis=(535,10, 590,65)
-            self.create(rook, lis, "gaming", color)
-        elif self.can.coords(self.squads[4])[0]-10<=over[0]<=self.can.coords(self.squads[4])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L4'and self.squads[4][-1]!="F":
-            full = self.squads[4]+"F"
-            self.can.addtag_withtag(full, self.squads[4])
-            self.squads[4] = full
-            self.can.delete(ID)
-            lis=(610,10, 665,65)
-            self.create(rook, lis, "gaming", color)    
-        elif self.can.coords(self.squads[5])[0]-10<=over[0]<=self.can.coords(self.squads[5])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L0'and self.squads[5][-1]!="F":
-            full = self.squads[5]+"F"
-            self.can.addtag_withtag(full, self.squads[5])
-            self.squads[5] = full
-            self.can.delete(ID)
-            lis=(310,85, 365,140)
-            self.create(rook, lis, "gaming", color)
-        elif self.can.coords(self.squads[6])[0]-10<=over[0]<=self.can.coords(self.squads[6])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L1'and self.squads[6][-1]!="F":
-            full = self.squads[6]+"F"
-            self.can.addtag_withtag(full, self.squads[6])
-            self.squads[6] = full
-            self.can.delete(ID)
-            lis=(385,85, 440,140)
-            self.create(rook, lis, "gaming", color)
-        elif self.can.coords(self.squads[7])[0]-10<=over[0]<=self.can.coords(self.squads[7])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L2'and self.squads[7][-1]!="F":
-            full = self.squads[7]+"F"
-            self.can.addtag_withtag(full, self.squads[7])
-            self.squads[7] = full
-            self.can.delete(ID)
-            lis=(460,85, 515,140)
-            self.create(rook, lis, "gaming", color)
-        elif self.can.coords(self.squads[8])[0]-10<=over[0]<=self.can.coords(self.squads[8])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L3'and self.squads[8][-1]!="F":
-            full = self.squads[8]+"F"
-            self.can.addtag_withtag(full, self.squads[8])
-            self.squads[8] = full
-            self.can.delete(ID)
-            lis=(535,85, 590,140)
-            self.create(rook, lis, "gaming", color)
-        elif self.can.coords(self.squads[9])[0]-10<=over[0]<=self.can.coords(self.squads[9])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L4'and self.squads[9][-1]!="F":
-            full = self.squads[9]+"F"
-            self.can.addtag_withtag(full, self.squads[9])
-            self.squads[9] = full
-            self.can.delete(ID)
-            lis=(610,85, 665,140)
-            self.create(rook, lis, "gaming", color)
+            #Placing the Sand Tower
+            if rook=="one":
+                ID=self.identi0[0]
+                over=self.can.coords(ID)
+                #print(self.can.find_overlapping(over[0]-5, over[1], over[0]+20, over[1]+10)[0])
+                squad_id=self.can.find_overlapping(over[0], over[1], over[0]+20, over[1]+10)[0]
+                color=(self.can.gettags(squad_id)[1])
+                squad_id=(self.can.gettags(squad_id)[0])
+                #print(self.squads[0], "ya")
+                #print(squad_id=='C0L0')
+                if self.can.coords(self.squads[0])[0]-10<=over[0]<=self.can.coords(self.squads[0])[2] and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L0'and self.squads[0][-1]!="F":
+                    full = self.squads[0]+"F"
+                    self.can.addtag_withtag(full, self.squads[0])
+                    self.squads[0] = full
+                    self.can.delete(ID)
+                    lis=(310,10, 365,65)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=50
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    #self.can.coords(ID, 310,10, 365,65)
+                    
+                elif self.can.coords(self.squads[1])[0]-10<=over[0]<=self.can.coords(self.squads[1])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L1'and self.squads[1][-1]!="F":
+                    full = self.squads[1]+"F"
+                    self.can.addtag_withtag(full, self.squads[1])
+                    self.squads[1] = full
+                    self.can.delete(ID)
+                    lis = (385,10, 440,65)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=50
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[2])[0]-10<=over[0]<=self.can.coords(self.squads[2])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L2'and self.squads[2][-1]!="F":
+                    full = self.squads[2]+"F"
+                    self.can.addtag_withtag(full, self.squads[2])
+                    self.squads[2] = full
+                    self.can.delete(ID)
+                    lis=(460,10, 515,65)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=50
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[3])[0]-10<=over[0]<=self.can.coords(self.squads[3])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L3'and self.squads[3][-1]!="F":
+                    full = self.squads[3]+"F"
+                    self.can.addtag_withtag(full, self.squads[3])
+                    self.squads[3] = full
+                    self.can.delete(ID)
+                    lis=(535,10, 590,65)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=50
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[4])[0]-10<=over[0]<=self.can.coords(self.squads[4])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L4'and self.squads[4][-1]!="F":
+                    full = self.squads[4]+"F"
+                    self.can.addtag_withtag(full, self.squads[4])
+                    self.squads[4] = full
+                    self.can.delete(ID)
+                    lis=(610,10, 665,65)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=50
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[5])[0]-10<=over[0]<=self.can.coords(self.squads[5])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L0'and self.squads[5][-1]!="F":
+                    full = self.squads[5]+"F"
+                    self.can.addtag_withtag(full, self.squads[5])
+                    self.squads[5] = full
+                    self.can.delete(ID)
+                    lis=(310,85, 365,140)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=50
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[6])[0]-10<=over[0]<=self.can.coords(self.squads[6])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L1'and self.squads[6][-1]!="F":
+                    full = self.squads[6]+"F"
+                    self.can.addtag_withtag(full, self.squads[6])
+                    self.squads[6] = full
+                    self.can.delete(ID)
+                    lis=(385,85, 440,140)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=50
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[7])[0]-10<=over[0]<=self.can.coords(self.squads[7])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L2'and self.squads[7][-1]!="F":
+                    full = self.squads[7]+"F"
+                    self.can.addtag_withtag(full, self.squads[7])
+                    self.squads[7] = full
+                    self.can.delete(ID)
+                    lis=(460,85, 515,140)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=50
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[8])[0]-10<=over[0]<=self.can.coords(self.squads[8])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L3'and self.squads[8][-1]!="F":
+                    full = self.squads[8]+"F"
+                    self.can.addtag_withtag(full, self.squads[8])
+                    self.squads[8] = full
+                    self.can.delete(ID)
+                    lis=(535,85, 590,140)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=50
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[9])[0]-10<=over[0]<=self.can.coords(self.squads[9])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L4'and self.squads[9][-1]!="F":
+                    full = self.squads[9]+"F"
+                    self.can.addtag_withtag(full, self.squads[9])
+                    self.squads[9] = full
+                    self.can.delete(ID)
+                    lis=(610,85, 665,140)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=50
+                    self.coinslab.config(text="COINS:" + str(self.coins))
 
-        else:
-            if rook == "one":
-                self.can.coords(ID, 50, 100)  
+                else:
+                    if rook == "one":
+                        self.can.coords(ID, 50, 100)
+                              
+                    elif rook == "two":
+                        self.can.coords(ID, 50, 180)
+                            
+                    elif rook == "three":
+                        self.can.coords(ID, 50, 260)
+                            
+                    elif rook == "four":
+                        self.can.coords(ID, 50, 340)
+                        
+            #Placing the Rook Tower
+                        
             elif rook == "two":
-                self.can.coords(ID, 50, 180)
-            elif rook == "three":
-                self.can.coords(ID, 50, 260)
-            elif rook == "four":
-                self.can.coords(ID, 50, 340)
+                ID=self.identi1[0]
+                over=self.can.coords(ID)
+                #print(self.can.find_overlapping(over[0]-5, over[1], over[0]+20, over[1]+10)[0])
+                squad_id=self.can.find_overlapping(over[0], over[1], over[0]+20, over[1]+10)[0]
+                color=(self.can.gettags(squad_id)[1])
+                squad_id=(self.can.gettags(squad_id)[0])
+                #print(self.squads[0], "ya")
+                #print(squad_id=='C0L0')
+                if self.can.coords(self.squads[0])[0]-10<=over[0]<=self.can.coords(self.squads[0])[2] and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L0'and self.squads[0][-1]!="F":
+                    full = self.squads[0]+"F"
+                    self.can.addtag_withtag(full, self.squads[0])
+                    self.squads[0] = full
+                    self.can.delete(ID)
+                    lis=(310,10, 365,65)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=100
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    #self.can.coords(ID, 310,10, 365,65)
+                    
+                elif self.can.coords(self.squads[1])[0]-10<=over[0]<=self.can.coords(self.squads[1])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L1'and self.squads[1][-1]!="F":
+                    full = self.squads[1]+"F"
+                    self.can.addtag_withtag(full, self.squads[1])
+                    self.squads[1] = full
+                    self.can.delete(ID)
+                    lis = (385,10, 440,65)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=100
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[2])[0]-10<=over[0]<=self.can.coords(self.squads[2])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L2'and self.squads[2][-1]!="F":
+                    full = self.squads[2]+"F"
+                    self.can.addtag_withtag(full, self.squads[2])
+                    self.squads[2] = full
+                    self.can.delete(ID)
+                    lis=(460,10, 515,65)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-100
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[3])[0]-10<=over[0]<=self.can.coords(self.squads[3])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L3'and self.squads[3][-1]!="F":
+                    full = self.squads[3]+"F"
+                    self.can.addtag_withtag(full, self.squads[3])
+                    self.squads[3] = full
+                    self.can.delete(ID)
+                    lis=(535,10, 590,65)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=100
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[4])[0]-10<=over[0]<=self.can.coords(self.squads[4])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L4'and self.squads[4][-1]!="F":
+                    full = self.squads[4]+"F"
+                    self.can.addtag_withtag(full, self.squads[4])
+                    self.squads[4] = full
+                    self.can.delete(ID)
+                    lis=(610,10, 665,65)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=100
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[5])[0]-10<=over[0]<=self.can.coords(self.squads[5])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L0'and self.squads[5][-1]!="F":
+                    full = self.squads[5]+"F"
+                    self.can.addtag_withtag(full, self.squads[5])
+                    self.squads[5] = full
+                    self.can.delete(ID)
+                    lis=(310,85, 365,140)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=100
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[6])[0]-10<=over[0]<=self.can.coords(self.squads[6])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L1'and self.squads[6][-1]!="F":
+                    full = self.squads[6]+"F"
+                    self.can.addtag_withtag(full, self.squads[6])
+                    self.squads[6] = full
+                    self.can.delete(ID)
+                    lis=(385,85, 440,140)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=100
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[7])[0]-10<=over[0]<=self.can.coords(self.squads[7])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L2'and self.squads[7][-1]!="F":
+                    full = self.squads[7]+"F"
+                    self.can.addtag_withtag(full, self.squads[7])
+                    self.squads[7] = full
+                    self.can.delete(ID)
+                    lis=(460,85, 515,140)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=100
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[8])[0]-10<=over[0]<=self.can.coords(self.squads[8])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L3'and self.squads[8][-1]!="F":
+                    full = self.squads[8]+"F"
+                    self.can.addtag_withtag(full, self.squads[8])
+                    self.squads[8] = full
+                    self.can.delete(ID)
+                    lis=(535,85, 590,140)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=100
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[9])[0]-10<=over[0]<=self.can.coords(self.squads[9])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L4'and self.squads[9][-1]!="F":
+                    full = self.squads[9]+"F"
+                    self.can.addtag_withtag(full, self.squads[9])
+                    self.squads[9] = full
+                    self.can.delete(ID)
+                    lis=(610,85, 665,140)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=100
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+
+                else:
+                    if rook == "one":
+                        self.can.coords(ID, 50, 100)
+                              
+                    elif rook == "two":
+                        self.can.coords(ID, 50, 180)
+                            
+                    elif rook == "three":
+                        self.can.coords(ID, 50, 260)
+                            
+                    elif rook == "four":
+                        self.can.coords(ID, 50, 340)
+                
+            #Placing the Fire Tower    
+            elif rook=="three":
+                ID=self.identi2[0]
+                over=self.can.coords(ID)
+                #print(self.can.find_overlapping(over[0]-5, over[1], over[0]+20, over[1]+10)[0])
+                squad_id=self.can.find_overlapping(over[0], over[1], over[0]+20, over[1]+10)[0]
+                color=(self.can.gettags(squad_id)[1])
+                squad_id=(self.can.gettags(squad_id)[0])
+                #print(self.squads[0], "ya")
+                #print(squad_id=='C0L0')
+                if self.can.coords(self.squads[0])[0]-10<=over[0]<=self.can.coords(self.squads[0])[2] and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L0'and self.squads[0][-1]!="F":
+                    full = self.squads[0]+"F"
+                    self.can.addtag_withtag(full, self.squads[0])
+                    self.squads[0] = full
+                    self.can.delete(ID)
+                    lis=(310,10, 365,65)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=150
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    #self.can.coords(ID, 310,10, 365,65)       
+                elif self.can.coords(self.squads[1])[0]-10<=over[0]<=self.can.coords(self.squads[1])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L1'and self.squads[1][-1]!="F":
+                    full = self.squads[1]+"F"
+                    self.can.addtag_withtag(full, self.squads[1])
+                    self.squads[1] = full
+                    self.can.delete(ID)
+                    lis = (385,10, 440,65)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=150
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[2])[0]-10<=over[0]<=self.can.coords(self.squads[2])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L2'and self.squads[2][-1]!="F":
+                    full = self.squads[2]+"F"
+                    self.can.addtag_withtag(full, self.squads[2])
+                    self.squads[2] = full
+                    self.can.delete(ID)
+                    lis=(460,10, 515,65)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=150
+                elif self.can.coords(self.squads[3])[0]-10<=over[0]<=self.can.coords(self.squads[3])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L3'and self.squads[3][-1]!="F":
+                    full = self.squads[3]+"F"
+                    self.can.addtag_withtag(full, self.squads[3])
+                    self.squads[3] = full
+                    self.can.delete(ID)
+                    lis=(535,10, 590,65)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=150
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[4])[0]-10<=over[0]<=self.can.coords(self.squads[4])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L4'and self.squads[4][-1]!="F":
+                    full = self.squads[4]+"F"
+                    self.can.addtag_withtag(full, self.squads[4])
+                    self.squads[4] = full
+                    self.can.delete(ID)
+                    lis=(610,10, 665,65)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=150
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[5])[0]-10<=over[0]<=self.can.coords(self.squads[5])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L0'and self.squads[5][-1]!="F":
+                    full = self.squads[5]+"F"
+                    self.can.addtag_withtag(full, self.squads[5])
+                    self.squads[5] = full
+                    self.can.delete(ID)
+                    lis=(310,85, 365,140)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=150
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[6])[0]-10<=over[0]<=self.can.coords(self.squads[6])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L1'and self.squads[6][-1]!="F":
+                    full = self.squads[6]+"F"
+                    self.can.addtag_withtag(full, self.squads[6])
+                    self.squads[6] = full
+                    self.can.delete(ID)
+                    lis=(385,85, 440,140)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=150
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[7])[0]-10<=over[0]<=self.can.coords(self.squads[7])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L2'and self.squads[7][-1]!="F":
+                    full = self.squads[7]+"F"
+                    self.can.addtag_withtag(full, self.squads[7])
+                    self.squads[7] = full
+                    self.can.delete(ID)
+                    lis=(460,85, 515,140)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=150
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[8])[0]-10<=over[0]<=self.can.coords(self.squads[8])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L3'and self.squads[8][-1]!="F":
+                    full = self.squads[8]+"F"
+                    self.can.addtag_withtag(full, self.squads[8])
+                    self.squads[8] = full
+                    self.can.delete(ID)
+                    lis=(535,85, 590,140)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=150
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[9])[0]-10<=over[0]<=self.can.coords(self.squads[9])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L4'and self.squads[9][-1]!="F":
+                    full = self.squads[9]+"F"
+                    self.can.addtag_withtag(full, self.squads[9])
+                    self.squads[9] = full
+                    self.can.delete(ID)
+                    lis=(610,85, 665,140)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=150
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+
+                else:
+                    if rook == "one":
+                        self.can.coords(ID, 50, 100)
+                              
+                    elif rook == "two":
+                        self.can.coords(ID, 50, 180)
+                            
+                    elif rook == "three":
+                        self.can.coords(ID, 50, 260)
+                            
+                    elif rook == "four":
+                        self.can.coords(ID, 50, 340)
+
+            #Placing the Water Tower            
+            elif rook=="four":
+                ID=self.identi3[0]
+                over=self.can.coords(ID)
+                #print(self.can.find_overlapping(over[0]-5, over[1], over[0]+20, over[1]+10)[0])
+                squad_id=self.can.find_overlapping(over[0], over[1], over[0]+20, over[1]+10)[0]
+                color=(self.can.gettags(squad_id)[1])
+                squad_id=(self.can.gettags(squad_id)[0])
+                #print(self.squads[0], "ya")
+                #print(squad_id=='C0L0')
+                if self.can.coords(self.squads[0])[0]-10<=over[0]<=self.can.coords(self.squads[0])[2] and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L0'and self.squads[0][-1]!="F":
+                    full = self.squads[0]+"F"
+                    self.can.addtag_withtag(full, self.squads[0])
+                    self.squads[0] = full
+                    self.can.delete(ID)
+                    lis=(310,10, 365,65)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=150
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    #self.can.coords(ID, 310,10, 365,65)       
+                elif self.can.coords(self.squads[1])[0]-10<=over[0]<=self.can.coords(self.squads[1])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L1'and self.squads[1][-1]!="F":
+                    full = self.squads[1]+"F"
+                    self.can.addtag_withtag(full, self.squads[1])
+                    self.squads[1] = full
+                    self.can.delete(ID)
+                    lis = (385,10, 440,65)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=150
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[2])[0]-10<=over[0]<=self.can.coords(self.squads[2])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L2'and self.squads[2][-1]!="F":
+                    full = self.squads[2]+"F"
+                    self.can.addtag_withtag(full, self.squads[2])
+                    self.squads[2] = full
+                    self.can.delete(ID)
+                    lis=(460,10, 515,65)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=150
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[3])[0]-10<=over[0]<=self.can.coords(self.squads[3])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L3'and self.squads[3][-1]!="F":
+                    full = self.squads[3]+"F"
+                    self.can.addtag_withtag(full, self.squads[3])
+                    self.squads[3] = full
+                    self.can.delete(ID)
+                    lis=(535,10, 590,65)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=150
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[4])[0]-10<=over[0]<=self.can.coords(self.squads[4])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L4'and self.squads[4][-1]!="F":
+                    full = self.squads[4]+"F"
+                    self.can.addtag_withtag(full, self.squads[4])
+                    self.squads[4] = full
+                    self.can.delete(ID)
+                    lis=(610,10, 665,65)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=150
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[5])[0]-10<=over[0]<=self.can.coords(self.squads[5])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L0'and self.squads[5][-1]!="F":
+                    full = self.squads[5]+"F"
+                    self.can.addtag_withtag(full, self.squads[5])
+                    self.squads[5] = full
+                    self.can.delete(ID)
+                    lis=(310,85, 365,140)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=150
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[6])[0]-10<=over[0]<=self.can.coords(self.squads[6])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L1'and self.squads[6][-1]!="F":
+                    full = self.squads[6]+"F"
+                    self.can.addtag_withtag(full, self.squads[6])
+                    self.squads[6] = full
+                    self.can.delete(ID)
+                    lis=(385,85, 440,140)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=150
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[7])[0]-10<=over[0]<=self.can.coords(self.squads[7])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L2'and self.squads[7][-1]!="F":
+                    full = self.squads[7]+"F"
+                    self.can.addtag_withtag(full, self.squads[7])
+                    self.squads[7] = full
+                    self.can.delete(ID)
+                    lis=(460,85, 515,140)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=150
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[8])[0]-10<=over[0]<=self.can.coords(self.squads[8])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L3'and self.squads[8][-1]!="F":
+                    full = self.squads[8]+"F"
+                    self.can.addtag_withtag(full, self.squads[8])
+                    self.squads[8] = full
+                    self.can.delete(ID)
+                    lis=(535,85, 590,140)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=150
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+                    
+                elif self.can.coords(self.squads[9])[0]-10<=over[0]<=self.can.coords(self.squads[9])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L4'and self.squads[9][-1]!="F":
+                    full = self.squads[9]+"F"
+                    self.can.addtag_withtag(full, self.squads[9])
+                    self.squads[9] = full
+                    self.can.delete(ID)
+                    lis=(610,85, 665,140)
+                    self.create(rook, lis, "gaming", color)
+                    self.coins-=150
+                    self.coinslab.config(text="COINS:" + str(self.coins))
+
+                else:
+                    if rook == "one":
+                        self.can.coords(ID, 50, 100)
+                              
+                    elif rook == "two":
+                        self.can.coords(ID, 50, 180)
+                            
+                    elif rook == "three":
+                        self.can.coords(ID, 50, 260)
+                            
+                    elif rook == "four":
+                        self.can.coords(ID, 50, 340)
+                    
+            
+
+            
         
             
         
@@ -357,7 +934,36 @@ class Game_Win:
         #touch[6]
         #self.selected_rook = (rook, x, y)
         #self.new_position (squads, i+1, x, y, rook)
-            
+class Instructions_Win:
+    
+    def __init__(self):
+        
+        self.canvas = Canvas(window, width = 800, height = 600,
+                             highlightthickness = 0, relief='ridge')
+        self.canvas.place(x=0,y=0)
+
+        self.canvas.configure(bg='black')
+
+        #All the instructions
+        title = "INSTRUCTIONS"
+        self.inst2 = Label(self.canvas, text = title, font=("padauk book",30),fg="royalblue2",bg="black",borderwidth=0)
+        self.inst2.place(x=250,y=20,width=300,height=30)
+        
+        instructions = '''You have to stop the avatars using your rooks!\n You have some different types of rooks like:\n\n
+        Sand Rook: This rook costs 50 coins and has 2 points of \ndamage and resists 10 point of damage.\n Rock Rook: This rook costs 100 coins and has 4 points of
+        damage and resists 14 point of damage.\nFire Rook: This rook costs 150 coins and has 8 points of \ndamage and resists 16 point of damage
+        Water Rook: This rook costs 150 coins and has 8 points of \ndamage and resists 16 point of damage.\n\n If you have enough coins,you put this
+    towers to defend your kingdom'''
+        self.inst = Label(self.canvas, text = instructions, font=("padauk book",20),fg="white",bg="black",borderwidth=0)
+        self.inst.place(x=10,y=60,width=750,height=500)
+
+        #Back Button
+        self.backbutton = Button(self.canvas, text = "BACK", font=("padauk book",30),fg="white",bg="black",borderwidth=0,command=self.backbutton)
+        self.backbutton.place(x=340,y=560,width=130,height=40)
+
+    def backbutton(self):
+        self.canvas.destroy()
+        
              
 
         
@@ -414,4 +1020,5 @@ if __name__ == "__main__":
     home_window = Open_Window(window)
     window.title("Clash Rooks")
     window.minsize(800,700)
+
 
