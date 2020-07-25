@@ -514,11 +514,12 @@ class Game_Win:
             if len(rang)> 0:
                 print(Spoints)
                 Sarrow =self.can.create_polygon(Spoints,width=1,outline="black", fill="darkorange3", tags= "Sarrow")
+                self.can.addtag_withtag("2", Sarrow)
                 #self.waste1 = self.can.create_polygon(points4,width=2,outline="black", fill="darkorange3", tags= "waste")
                 self.limit=Spoints[5]+100
                 self.arrow_loop()
-                posc = self.can.coords(Sarrow)
-                if posc[6]>self.limit:
+                #posc = self.can.coords(Sarrow)
+                #if posc[6]>self.limit:
                     
     def arrow_loop(self):#,rook, position):
         
