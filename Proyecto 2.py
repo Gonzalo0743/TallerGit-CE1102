@@ -188,7 +188,9 @@ class Game_Win:
             self.identi2= self.can.find_overlapping(50, 260, 100, 310)
             self.identi3= self.can.find_overlapping(50, 340, 100, 390)
         #################################################################################################################3
-            window.after(5000, lambda :self.avatars())
+            window.after(3000, lambda :self.arch_avatar())
+            window.after(3000, lambda :self.kng_avatar())
+            
             
             
             #self.can.tag_raise(self.identi[0])
@@ -241,13 +243,67 @@ class Game_Win:
             return self.table(positions, columm, lines, 0, name[:-1] + str(int(name[3])+ 1), contli+1, contco, saved)
         elif contco<columm:
             return self.table(positions, columm, 4, color, "C"+str(int(name[1])+1)+"L0", 0, contco+1, saved)
+    def kng_avatar(self):
+        print("ho")
+        rpocition= random.randint(0,4)
+        place=self.squads2[6][rpocition]
+        x=place[2]-33
+        y=place[3]-35
+        self.move_ava("knig", y, x)
+    def arch_avatar(self):
+        rpocition= random.randint(0,4)
+        place=self.squads2[6][rpocition]
+        x=place[2]-33
+        y=place[3]-35
         
-    def avatars(self):
-        rpocition= random.randint(0,4):
-        self.squads[rpocition]
-        print(self.squads[rpocition])
-        self.archer = (PhotoImage(file= os.path.join('HWalk', "ArcherWalk1.png"))).subsample(2,2)
-        self.avaimage = self.can.create_image(20, 20, image= self.archer)#, tags='rook')
+        
+        self.move_ava("arch", y, x)
+    def move_ava(self, avatar, y, x):
+        
+        if avatar=="arch":
+            x_a, y_a = x, y
+            self.archer = (PhotoImage(file= os.path.join('images/Archer', "Walk1.png")))
+            self.avaimageA = self.can.create_image(x_a, y_a, image= self.archer, tags="arch")
+            self.can.addtag_withtag("alive", self.avaimageA)
+            print (self.can.gettags(self.avaimageA))
+            if self.can.gettags(self.avaimageA)[1] == "alive":
+                window.after(1000, lambda: [self.walk("arch", y_a, x_a)])
+        elif avatar=="knig":
+            x_k, y_k = x, y
+            #print(x_a)
+            self.knight = (PhotoImage(file= os.path.join('images/Knight', "Walk1.png")))
+            self.avaimageK = self.can.create_image(x_k, y_k, image= self.knight, tags="knig")
+            self.can.addtag_withtag("alive", self.avaimageK)
+            print (self.can.gettags(self.avaimageK))
+            if self.can.gettags(self.avaimageK)[1] == "alive":
+                window.after(1000, lambda: [self.walk("knig", y_k, x_k)])
+            
+    def walk(self, avatar, y, x):
+        
+        if avatar=="arch":
+            window.after(1000, lambda: [self.can.delete(self.avaimageA), self.walk1('images/Archer', "Walk2.png", y-30, x)])
+            window.after(1500, lambda: [self.can.delete(self.avaimageA), self.walk1('images/Archer', "Walk3.png", y-60, x)])
+            window.after(2000, lambda: [self.can.delete(self.avaimageA), self.move_ava(avatar, y-75, x)])
+        elif avatar=="knig":
+            window.after(1000, lambda: [self.can.delete(self.avaimageK), self.walk1('images/Knight', "Walk2.png", y-30, x)])
+            window.after(2000, lambda: [self.can.delete(self.avaimageK), self.walk1('images/Knight', "Walk3.png", y-60, x)])
+            window.after(3000, lambda: [self.can.delete(self.avaimageK), self.move_ava(avatar, y-75, x)])
+                                        
+
+    def walk1(self, location, image, y, x):
+        print(location[-4:])
+        if location[-4:]=="cher":
+            self.archer = (PhotoImage(file= os.path.join(location, image)))
+            self.avaimage = self.can.create_image(x, y, image= self.archer)
+        elif location[-4:]=="ight":
+            self.knight = (PhotoImage(file= os.path.join(location, image)))
+            self.avaimageK = self.can.create_image(x, y, image= self.knight)
+            
+            
+            
+                
+
+
         
     def press_boton(self, event, ID):
         rook = ID
