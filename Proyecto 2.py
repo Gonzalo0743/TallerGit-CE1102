@@ -5,6 +5,8 @@ import random
 import pickle
 import os
 
+#Global Data
+name = ""
 
 class Open_Window:
     def __init__(self, master):
@@ -19,6 +21,7 @@ class Open_Window:
 class Home_Window:
 
     def __init__(self, inself):
+        global name
         #Main Window
         self.canvas = Canvas( width = 800, height = 700,
                              highlightthickness = 0, relief='ridge')
@@ -33,22 +36,33 @@ class Home_Window:
         self.rooks = Label(self.canvas, text= "ROOKS", font=("padauk book",46),fg="royalblue2",bg="black")
         self.rooks.place(x=310,y=110,width=214,height=47)
 
+        #Label Name
+        self.labelname = Label(self.canvas, text = "YOUR NAME:", font=("padauk book",28),fg="white",bg="black")
+        self.labelname.place(x=180,y=200,width=240, height=50)
+
+        self.write_name = Entry(self.canvas,font=("padauk book",28),fg="white",bg="black")
+        self.write_name.place(x=430, y=205, width=250, height=40)
+        
         #Buttons
-        self.play = Button(self.canvas, text = "NEW GAME", font=("padauk book",28),fg="white",bg="black",borderwidth=0, command =lambda: [self.del_win(), inself.switch_frame(Game_Win, "new")])
-        self.play.place(x=300,y=200,width=240,height=50)
+        self.play = Button(self.canvas, text = "NEW GAME", font=("padauk book",28),fg="white",bg="black",borderwidth=0, command =lambda: [self.playername(),self.del_win(), inself.switch_frame(Game_Win, "new")])
+        self.play.place(x=300,y=300,width=240,height=50)
 
         self.load = Button(self.canvas, text = "LOAD GAME", font=("padauk book",28),fg="white",bg="black",borderwidth=0, command = lambda: [self.del_win(), inself.switch_frame(Game_Win, "load")])
-        self.load.place(x=295,y=260,width=250,height=50)
+        self.load.place(x=295,y=360,width=250,height=50)
 
         self.instructions = Button(self.canvas, text = "INSTRUCTIONS", font=("padauk book",28),fg="white",bg="black",borderwidth=0, command = self.instructions)
-        self.instructions.place(x=275,y=330,width=290,height=50)
+        self.instructions.place(x=275,y=430,width=290,height=50)
 
         self.highscores = Button(self.canvas, text = "HIGHSCORES", font=("padauk book",28),fg="white",bg="black",borderwidth=0)
-        self.highscores.place(x=280,y=390,width=260,height=50)
+        self.highscores.place(x=280,y=490,width=260,height=50)
 
         self.credits = Button(self.canvas, text = "CREDITS", font=("padauk book",28),fg="white",bg="black",borderwidth=0,command= self.credits)
-        self.credits.place(x=325,y=450,width=180,height=50)
+        self.credits.place(x=325,y=550,width=180,height=50)
 
+   
+    def playername(self):
+        global name
+        name = self.write_name.get()
     #Buttons Pressed
     def game(self):
         Game_Win(inself)
@@ -58,12 +72,32 @@ class Home_Window:
         Credits_Win()
     def del_win(self):
         self.canvas.destroy()
+
+
         
 class Game_Win:
     def __init__(self, inself, saved):
+        global name
         print (saved + " 2")
+        print(name)
         self.can = Canvas( width = 800, height = 675, highlightthickness = 0, relief='ridge', bg= "black")
         self.can.place(x=0,y=0)
+
+        self.name = Label(self.can, text=name, font=("padauk book",28),fg="royalblue2",bg="black")
+        self.name.place(x=20,y=420,width=150,height=30)
+
+        
+        self.time = 0
+        self.timelab = Label(self.can, text= "TIME:" + str(self.time), font=("padauk book",20),fg="white",bg="black")
+        self.timelab.place(x=20,y=470,width=140,height=30)
+        self.timer()
+        
+        
+
+        #Coins Title
+        self.coins = 0
+        self.coinslab = Label(self.can, text= "COINS:" + str(self.coins), font=("padauk book",20),fg="white",bg="black")
+        self.coinslab.place(x=40,y=520,width=140,height=30)
 
         self.save = Button(self.can, text = "Save Game", font=("padauk book",20),fg="white",bg="black",borderwidth=0,command= self.load)
         self.save.place(x=20, y=600)
@@ -81,18 +115,16 @@ class Game_Win:
                      ((300,525, 375,600),(375,525, 450,600),(450,525, 525,600),(525,525, 600,600),(600,525, 675,600)),
                      ((300,600, 375,675),(375,600, 450,675),(450,600, 525,675),(525,600, 600,675),(600,600, 675,675)))
 
-        #Coins Title
-        self.coins = 0
-        self.coinslab = Label(self.can, text= "COINS:" + str(self.coins), font=("padauk book",20),fg="white",bg="black")
-        self.coinslab.place(x=20,y=480,width=140,height=30)
+        
         
 
         self.table(positions, len(positions), len(positions[0])-1, 0, "C0L0", 0,0, saved)
 
-        
-
-
-   
+    def timer(self):
+        self.time += 1
+        self.timelab.config(text="TIME:" +str(self.time))
+        window.after(1000,self.timer)
+            
     def coinscount(self):
         #Loading images
         print(self.coins)
@@ -115,7 +147,7 @@ class Game_Win:
         #Copper Coin Appears
         if self.num == 1 or self.num == 2 or self.num == 3 or self.num == 4 or self.num==5:
             self.xcord = random.choice((340,415,490,565,640))
-            self.ycord = random.choice((150,225,300,375,450,525,600))
+            self.ycord = random.choice((160,235,310,385,460,535,610))
             self.coin = self.can.create_image(self.xcord,self.ycord, anchor=N, image=self.coppercoin)
             self.can.tag_bind(self.coin, "<Button-1>", lambda event: self.press_coppercoin(event,self.coin))
 
@@ -187,9 +219,6 @@ class Game_Win:
             self.identi1= self.can.find_overlapping(50, 180, 100, 220)
             self.identi2= self.can.find_overlapping(50, 260, 100, 310)
             self.identi3= self.can.find_overlapping(50, 340, 100, 390)
-        #################################################################################################################3
-            window.after(5000, lambda :self.avatars())
-            
             
             #self.can.tag_raise(self.identi[0])
             self.can.tag_bind(self.identi0[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi0[0]))
@@ -242,12 +271,7 @@ class Game_Win:
         elif contco<columm:
             return self.table(positions, columm, 4, color, "C"+str(int(name[1])+1)+"L0", 0, contco+1, saved)
         
-    def avatars(self):
-        rpocition= random.randint(0,4):
-        self.squads[rpocition]
-        print(self.squads[rpocition])
-        self.archer = (PhotoImage(file= os.path.join('HWalk', "ArcherWalk1.png"))).subsample(2,2)
-        self.avaimage = self.can.create_image(20, 20, image= self.archer)#, tags='rook')
+    
         
     def press_boton(self, event, ID):
         rook = ID
@@ -868,8 +892,6 @@ class Game_Win:
                     
             
 
-            
-        
             
         
         #over=self.can.coords(squads[i])
