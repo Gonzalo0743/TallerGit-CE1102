@@ -325,7 +325,7 @@ class Game_Win:
             self.can.addtag_withtag("alive", self.avaimageA)
             #print (self.can.gettags(self.avaimageA))
             if self.can.gettags(self.avaimageA)[1] == "alive":
-                window.after(1000, lambda: [self.walk("arch", y_a, x_a)])
+                window.after(12000, lambda: [self.walk("arch", y_a, x_a)])
                 
         elif avatar=="knig":
             x_k, y_k = x, y
@@ -335,7 +335,7 @@ class Game_Win:
             self.can.addtag_withtag("alive", self.avaimageK)
             #print (self.can.gettags(self.avaimageK))
             if self.can.gettags(self.avaimageK)[1] == "alive":
-                window.after(1000, lambda: [self.walk("knig", y_k, x_k)])
+                window.after(10000, lambda: [self.walk("knig", y_k, x_k)])
                 
         elif avatar=="cann":
             x_c, y_c = x, y
@@ -345,7 +345,7 @@ class Game_Win:
             self.can.addtag_withtag("alive", self.avaimageC)
             #print (self.can.gettags(self.avaimageC))
             if self.can.gettags(self.avaimageC)[1] == "alive":
-                window.after(1000, lambda: [self.walk("cann", y_c, x_c)])
+                window.after(13000, lambda: [self.walk("cann", y_c, x_c)])
 
         elif avatar=="lumb":
             x_l, y_l = x, y
@@ -355,7 +355,7 @@ class Game_Win:
             self.can.addtag_withtag("alive", self.avaimageL)
             #print (self.can.gettags(self.avaimageL))
             if self.can.gettags(self.avaimageL)[1] == "alive":
-                window.after(1000, lambda: [self.walk("lumb", y_l, x_l)])
+                window.after(14000, lambda: [self.walk("lumb", y_l, x_l)])
         
             
     def walk(self, avatar, y, x):
@@ -534,11 +534,10 @@ class Game_Win:
                 #self.waste1 = self.can.create_polygon(points4,width=2,outline="black", fill="darkorange3", tags= "waste")
 
                 #self.can.after(3000,lambda : [self.shoot(rook, position)])
-                limit= position[3]+100
                 #if (len(rang)> 0 and len(rang)!=1) or (len(rang)==1 and (self.can.gettags(rang[0])[0]!= "Sarrow")) :
 
 
-                self.limit=Spoints[5]+200
+                self.limit=Spoints[5]+100
 
         if rook=="two":
             Rpoints=(position[0]+30,position[1]+40, position[0]+20,position[1]+60,
@@ -550,16 +549,18 @@ class Game_Win:
                 self.Rarrow =self.can.create_polygon(Rpoints,width=1,outline="black", fill="gray40", tags= "Rarrow")
                 self.can.addtag_withtag("4", self.Rarrow)
                 #self.waste1 = self.can.create_polygon(points4,width=2,outline="black", fill="darkorange3", tags= "waste")
-                self.limit=Spoints[5]+200
+                self.limit=Rpoints[5]+100
                 
 
                 
                                 
     def arrow_loop(self ,rook, position):
-        
-        self.movement(rook, position)
-        self.can.after(80,lambda : [self.arrow_loop(rook, position)])#(rook, position))
-        
+        if rook == "one":
+            self.movement(rook, position)
+            self.can.after(80,lambda : [self.arrow_loop(rook, position)])#(rook, position))
+        elif rook == "two":
+            self.movement2(rook, position)
+            self.can.after(80,lambda : [self.arrow_loop(rook, position)])#(rook, position))
 
     def movement(self, rook, position):
         
@@ -585,7 +586,8 @@ class Game_Win:
             try:
                 self.can.move("Sarrow", 0, +5)
             except:
-                self.can.after(3000,lambda : [self.arrow_loop(rook, position)])
+                self.can.after(3000,lambda : [self.shoot(rook, position)])
+                
     def movement2(self,rook, position):
         try:
             
@@ -768,6 +770,8 @@ class Game_Win:
                     self.create(rook, lis, "gaming", color)
                     self.coins-=100
                     self.coinslab.config(text="COINS:" + str(self.coins))
+                    self.shoot(rook, lis)
+                    self.arrow_loop(rook, lis)
                     #self.can.coords(ID, 310,10, 365,65)
                     
                 elif self.can.coords(self.squads[1])[0]-10<=over[0]<=self.can.coords(self.squads[1])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L1'and self.squads[1][-1]!="F":
@@ -779,6 +783,8 @@ class Game_Win:
                     self.create(rook, lis, "gaming", color)
                     self.coins-=100
                     self.coinslab.config(text="COINS:" + str(self.coins))
+                    self.shoot(rook, lis)
+                    self.arrow_loop(rook, lis)
                     
                 elif self.can.coords(self.squads[2])[0]-10<=over[0]<=self.can.coords(self.squads[2])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L2'and self.squads[2][-1]!="F":
                     full = self.squads[2]+"F"
@@ -789,6 +795,8 @@ class Game_Win:
                     self.create(rook, lis, "gaming", color)
                     self.coins-100
                     self.coinslab.config(text="COINS:" + str(self.coins))
+                    self.shoot(rook, lis)
+                    self.arrow_loop(rook, lis)
                     
                 elif self.can.coords(self.squads[3])[0]-10<=over[0]<=self.can.coords(self.squads[3])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L3'and self.squads[3][-1]!="F":
                     full = self.squads[3]+"F"
@@ -799,6 +807,8 @@ class Game_Win:
                     self.create(rook, lis, "gaming", color)
                     self.coins-=100
                     self.coinslab.config(text="COINS:" + str(self.coins))
+                    self.shoot(rook, lis)
+                    self.arrow_loop(rook, lis)
                     
                 elif self.can.coords(self.squads[4])[0]-10<=over[0]<=self.can.coords(self.squads[4])[2]and self.can.coords(self.squads[0])[1]<=over[1]<=self.can.coords(self.squads[0])[3]and squad_id=='C0L4'and self.squads[4][-1]!="F":
                     full = self.squads[4]+"F"
@@ -809,6 +819,8 @@ class Game_Win:
                     self.create(rook, lis, "gaming", color)
                     self.coins-=100
                     self.coinslab.config(text="COINS:" + str(self.coins))
+                    self.shoot(rook, lis)
+                    self.arrow_loop(rook, lis)
                     
                 elif self.can.coords(self.squads[5])[0]-10<=over[0]<=self.can.coords(self.squads[5])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L0'and self.squads[5][-1]!="F":
                     full = self.squads[5]+"F"
@@ -819,6 +831,8 @@ class Game_Win:
                     self.create(rook, lis, "gaming", color)
                     self.coins-=100
                     self.coinslab.config(text="COINS:" + str(self.coins))
+                    self.shoot(rook, lis)
+                    self.arrow_loop(rook, lis)
                     
                 elif self.can.coords(self.squads[6])[0]-10<=over[0]<=self.can.coords(self.squads[6])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L1'and self.squads[6][-1]!="F":
                     full = self.squads[6]+"F"
@@ -829,6 +843,8 @@ class Game_Win:
                     self.create(rook, lis, "gaming", color)
                     self.coins-=100
                     self.coinslab.config(text="COINS:" + str(self.coins))
+                    self.shoot(rook, lis)
+                    self.arrow_loop(rook, lis)
                     
                 elif self.can.coords(self.squads[7])[0]-10<=over[0]<=self.can.coords(self.squads[7])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L2'and self.squads[7][-1]!="F":
                     full = self.squads[7]+"F"
@@ -839,6 +855,8 @@ class Game_Win:
                     self.create(rook, lis, "gaming", color)
                     self.coins-=100
                     self.coinslab.config(text="COINS:" + str(self.coins))
+                    self.shoot(rook, lis)
+                    self.arrow_loop(rook, lis)
                     
                 elif self.can.coords(self.squads[8])[0]-10<=over[0]<=self.can.coords(self.squads[8])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L3'and self.squads[8][-1]!="F":
                     full = self.squads[8]+"F"
@@ -849,6 +867,8 @@ class Game_Win:
                     self.create(rook, lis, "gaming", color)
                     self.coins-=100
                     self.coinslab.config(text="COINS:" + str(self.coins))
+                    self.shoot(rook, lis)
+                    self.arrow_loop(rook, lis)
                     
                 elif self.can.coords(self.squads[9])[0]-10<=over[0]<=self.can.coords(self.squads[9])[2]and self.can.coords(self.squads[5])[1]<=over[1]<=self.can.coords(self.squads[5])[3]and squad_id=='C1L4'and self.squads[9][-1]!="F":
                     full = self.squads[9]+"F"
@@ -859,6 +879,8 @@ class Game_Win:
                     self.create(rook, lis, "gaming", color)
                     self.coins-=100
                     self.coinslab.config(text="COINS:" + str(self.coins))
+                    self.shoot(rook, lis)
+                    self.arrow_loop(rook, lis)
 
                 else:
                     
