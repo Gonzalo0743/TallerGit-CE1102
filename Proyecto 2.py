@@ -6,7 +6,7 @@ import pickle
 import os
 
 #Global Data
-name = ""
+namep = ""
 
 class Open_Window:
     def __init__(self, master):
@@ -21,7 +21,7 @@ class Open_Window:
 class Home_Window:
 
     def __init__(self, inself):
-        global name
+        global namep
         #Main Window
         self.canvas = Canvas(width = 800, height = 700,
                              highlightthickness = 0, relief='ridge')
@@ -63,8 +63,8 @@ class Home_Window:
 
    
     def playername(self):
-        global name
-        name = self.write_name.get()
+        global namep
+        namep = self.write_name.get()
     #Buttons Pressed
     def game(self):
         Game_Win(inself)
@@ -79,13 +79,13 @@ class Home_Window:
         
 class Game_Win:
     def __init__(self, inself, saved):
-        global name
+        global namep
         print (saved + " 2")
-        print(name)
+        
         self.can = Canvas( width = 800, height = 675, highlightthickness = 0, relief='ridge', bg= "black")
         self.can.place(x=0,y=0)
 
-        self.name = Label(self.can, text=name, font=("padauk book",28),fg="royalblue2",bg="black")
+        self.name = Label(self.can, text=namep, font=("padauk book",28),fg="royalblue2",bg="black")
         self.name.place(x=20,y=420,width=150,height=30)
 
         
@@ -104,7 +104,7 @@ class Game_Win:
         self.save = Button(self.can, text = "Save Game", font=("padauk book",20),fg="white",bg="black",borderwidth=0,command= self.load)
         self.save.place(x=20, y=600)
 
-        winsound.PlaySound(os.path.join('8 bit Empire - Free Loop.wav'), winsound.SND_LOOP|winsound.SND_ASYNC)
+        winsound.PlaySound(os.path.join('Music8bit.wav'), winsound.SND_LOOP|winsound.SND_ASYNC)
         #self.canvas = Canvas( width = 375, height = 675, highlightthickness = 0, relief='ridge')
         #self.canvas.place(x=300,y=0)
         
@@ -190,14 +190,19 @@ class Game_Win:
 
         
     def table(self, positions, columm, lines, color, name, contli, contco, saved):
-        
+        global namep
         #self.identi= self.can.find_overlapping(0, 0, 55, 200)
         if contco==columm:
             if saved == "load":
                 #try:
                 pickle_file=open('data.pickle', 'rb')
                 rooks =pickle.load(pickle_file) 
-                self.load_game(rooks, 0, 1, 2)
+                self.load_game(rooks[0], 0, 1, 2)
+                self.time=rooks[1][0]
+                self.coins=rooks[1][1]
+                namep= rooks[1][2]
+                self.name = Label(self.can, text=namep, font=("padauk book",28),fg="royalblue2",bg="black")
+                self.name.place(x=20,y=420,width=150,height=30)
                 #except:
                 #    nothing=0
             self.coinscount()
@@ -341,7 +346,9 @@ class Game_Win:
                 window.after(1000,lambda: [self.can.delete(self.deadimage)])
                 
             else:
-                window.after(1000, lambda: [self.walk("arch", y_a, x_a)])
+                window.after(10000, lambda: [self.walk("arch", y_a, x_a)])
+         
+                
                 
         elif avatar=="knig":
             x_k, y_k = x, y
@@ -378,6 +385,7 @@ class Game_Win:
                 
             else:
                 window.after(1000, lambda: [self.walk("cann", y_c, x_c)])
+            
 
         elif avatar=="lumb":
             x_l, y_l = x, y
@@ -426,17 +434,21 @@ class Game_Win:
         if location[-4:]=="cher":
             self.archer = (PhotoImage(file= os.path.join(location, image)))
             self.avaimageA = self.can.create_image(x, y, image= self.archer, tags="arch")
+            self.can.addtag_withtag("alive", self.avaimageA)
         elif location[-4:]=="ight":
             self.knight = (PhotoImage(file= os.path.join(location, image)))
             self.avaimageK = self.can.create_image(x, y, image= self.knight, tags="knig")
+            self.can.addtag_withtag("alive", self.avaimageK)
 
         elif location[-4:]=="ibal":
             self.cannibal = (PhotoImage(file= os.path.join(location, image)))
             self.avaimageC = self.can.create_image(x, y, image= self.cannibal, tags="cann")
+            self.can.addtag_withtag("alive", self.avaimageC)
 
         elif location[-4:]=="jack":
             self.lumberjack = (PhotoImage(file= os.path.join(location, image)))
             self.avaimageL = self.can.create_image(x, y, image= self.lumberjack, tags="lumb")
+            self.can.addtag_withtag("alive", self.avaimageL)
     
         
     def press_boton(self, event, ID):
@@ -463,7 +475,11 @@ class Game_Win:
             #self.load_game(rooks, rook+2, place+2)
             
     def load (self):
+        global namep
         pickle_file = open('data.pickle', 'wb')
+        
+        self.tico = ((self.time, self.coins, namep))
+        self.data = (self.data,) + (self.tico,)
         pickle.dump(self.data, pickle_file)
         pickle_file.close()
         pickle_file=open('data.pickle', 'rb')
@@ -557,7 +573,8 @@ class Game_Win:
         self.can.tag_bind(self.identi3[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"four"))
             #    self.coins -= 150
         self.coinslab.config(text="COINS:" + str(self.coins))
-                #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
+        self.id="0"
+
 
         
     def shoot(self, rook, position):
@@ -568,14 +585,13 @@ class Game_Win:
             #print(len(self.rang), "ra" )
             #print(self.can.gettags(rang[0])[0], "1")
             
-            
-            if len(self.rang)> 0:
+            #print(self.can.gettags(self.rang[-1]))
+            if len(self.rang)>0 and self.can.gettags(self.rang[-1])[-1]== "alive":
                 self.Sarrow =self.can.create_polygon(Spoints,width=1,outline="black", fill="darkorange3", tags= "Sarrow")
-                self.can.addtag_withtag("2", self.Sarrow)
-                #self.waste1 = self.can.create_polygon(points4,width=2,outline="black", fill="darkorange3", tags= "waste")
+                self.can.addtag_withtag("s"+self.id, self.Sarrow)
+                self.id=str(int(self.id)+1)
+                #print(self.id)
 
-                #self.can.after(3000,lambda : [self.shoot(rook, position)])
-                #if (len(rang)> 0 and len(rang)!=1) or (len(rang)==1 and (self.can.gettags(rang[0])[0]!= "Sarrow")) :
 
 
                 self.limit=Spoints[5]+100
@@ -584,31 +600,31 @@ class Game_Win:
             Rpoints=(position[0]+30,position[1]+40, position[0]+20,position[1]+60,
                     position[0]+30,position[1]+70, position[0]+40,position[1]+60)
             rang=self.can.find_enclosed(position[0]-2, position[1], position[2]-2, position[3]+800)
-            if len(rang)> 0:
+            if len(rang)> 0 and self.can.gettags(self.rang[-1])[-1]== "alive":
                 #print(Spoints)
                 self.Rarrow =self.can.create_polygon(Rpoints,width=1,outline="black", fill="gray40", tags= "Rarrow")
-                self.can.addtag_withtag("4", self.Rarrow)
-                #self.waste1 = self.can.create_polygon(points4,width=2,outline="black", fill="darkorange3", tags= "waste")
+                self.can.addtag_withtag("r"+self.id, self.Rarrow)
+                self.id=str(int(self.id)+1)
                 self.limit=Rpoints[5]+100
         if rook=="three":
             Fpoints=(position[0]+30,position[1]+40, position[0]+20,position[1]+60,
                     position[0]+30,position[1]+70, position[0]+40,position[1]+60)
             rang=self.can.find_enclosed(position[0]-2, position[1], position[2]-2, position[3]+800)
-            if len(rang)> 0:
+            if len(rang)> 0 and self.can.gettags(self.rang[-1])[-1]== "alive":
                 #print(Spoints)
                 self.Farrow =self.can.create_polygon(Fpoints,width=1,outline="black", fill="darkorange1", tags= "Farrow")
-                self.can.addtag_withtag("8", self.Farrow)
-                #self.waste1 = self.can.create_polygon(points4,width=2,outline="black", fill="darkorange3", tags= "waste")
+                self.can.addtag_withtag("f"+self.id, self.Farrow)
+                self.id=str(int(self.id)+1)
                 self.limit=Fpoints[5]+100
         if rook=="four":
             Wpoints=(position[0]+30,position[1]+40, position[0]+20,position[1]+60,
                     position[0]+30,position[1]+70, position[0]+40,position[1]+60)
             rang=self.can.find_enclosed(position[0]-2, position[1], position[2]-2, position[3]+800)
-            if len(rang)> 0:
+            if len(rang)> 0 and self.can.gettags(self.rang[-1])[-1]== "alive":
                 #print(Spoints)
                 self.Warrow =self.can.create_polygon(Wpoints,width=1,outline="black", fill="dodgerblue3", tags= "Warrow")
-                self.can.addtag_withtag("8", self.Warrow)
-                #self.waste1 = self.can.create_polygon(points4,width=2,outline="black", fill="darkorange3", tags= "waste")
+                self.can.addtag_withtag("w"+self.id, self.Warrow)
+                self.id=str(int(self.id)+1)
                 self.limit=Wpoints[5]+100
                 
 
@@ -642,29 +658,27 @@ class Game_Win:
             crash=self.can.bbox(arrow)
             touch=self.can.find_overlapping(crash[0], crash[1], crash[2], crash[3])
 
-
             if self.can.gettags(touch[-1])[0]=="arch" or self.can.gettags(touch[-1])[0]=="knig" or self.can.gettags(touch[-1])[0]=="cann" or self.can.gettags(touch[-1])[0]=="lumb":
 
                 if self.can.gettags(touch[-1])[0]=="arch":
-                    self.life_arch -= 2
+                    self.life_arch -= 8
                     self.can.delete(arrow)
 
                 if self.can.gettags(touch[-1])[0]=="knig":
-                    self.life_knig -= 2
+                    self.life_knig -= 8
                     self.can.delete(arrow)
 
                 if self.can.gettags(touch[-1])[0]=="cann":
-                    self.life_cann -= 2
+                    self.life_cann -= 8
                     self.can.delete(arrow)
 
                 if self.can.gettags(touch[-1])[0]=="lumb":
-                    self.life_lumb -= 2
+                    self.life_lumb -= 8
                     self.can.delete(arrow)
-            
-            
 
             if posc[5]>self.limit:
                 self.shoot(rook, position)
+            
 
         except:
             try:
