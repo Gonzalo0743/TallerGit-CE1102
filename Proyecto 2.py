@@ -33,7 +33,7 @@ class Home_Window:
 
     #This function haves the information of the Home Window.
     def __init__(self, inself):
-        global name
+        global namep
 
         #Main Window
         self.canvas = Canvas(width = 800, height = 700,
@@ -76,8 +76,8 @@ class Home_Window:
 
     #This fuction gets and saves the name.
     def playername(self):
-        global name
-        name = self.write_name.get()
+        global namep
+        namep = self.write_name.get()
         
     #Buttons Pressed
     #This fuctions works when the buttons are pressed(opens the other windows).
@@ -99,21 +99,21 @@ class Home_Window:
         
 class Game_Win:
     def __init__(self, inself, saved):
-        global name
+        global namep
 
         #Backgroung
         self.can = Canvas( width = 800, height = 675, highlightthickness = 0, relief='ridge', bg= "black")
         self.can.place(x=0,y=0)
 
         #Name label
-        self.name = Label(self.can, text=name, font=("padauk book",28),fg="royalblue2",bg="black")
+        self.name = Label(self.can, text=namep, font=("padauk book",28),fg="royalblue2",bg="black")
         self.name.place(x=20,y=420,width=150,height=30)
 
         #Creates the time function to count time
         self.time = 0
         self.timelab = Label(self.can, text= "TIME:" + str(self.time), font=("padauk book",20),fg="white",bg="black")
         self.timelab.place(x=20,y=470,width=140,height=30)
-        self.timer()
+        
         
         
         #Coins Title
@@ -126,9 +126,8 @@ class Game_Win:
         self.save = Button(self.can, text = "Save Game", font=("padauk book",20),fg="white",bg="black",borderwidth=0,command= self.load)
         self.save.place(x=20, y=600)
 
-        self.tico = (self.coins,self.time,self.name)
 
-        self.win2 = 1
+        
 
         #Playing the sound
         winsound.PlaySound(os.path.join('Music8bit.wav'), winsound.SND_LOOP|winsound.SND_ASYNC)
@@ -151,19 +150,14 @@ class Game_Win:
 
     #This function counts the seconds
     def timer(self):
-        if self.win2 == 0:
-            True
-        else:
+        if self.win2 == True:
             self.time += 1
             self.timelab.config(text="TIME:" +str(self.time))
             window.after(1000,self.timer)
 
     #This function counts the coins and puts new coins randomly in the table        
     def coinscount(self):
-        if self.win2 == 0:
-            True
-
-        else:
+        if self.win2 == True:
         
             #Loading coins images
             self.coppercoin = PhotoImage(file = "images\CopperCoin.png")
@@ -210,13 +204,11 @@ class Game_Win:
         self.coinslab.config(text="COINS:" + str(self.coins))
         self.can.delete(coin)
         window.after(7000,self.coinscount)
-
     def press_silvercoin(self,event,coin):
         self.coins += 50
         self.coinslab.config(text="COINS:" + str(self.coins))
         self.can.delete(coin)
         window.after(7000,self.coinscount)
-
     def press_goldcoin(self,event,coin):
         self.coins += 100
         self.coinslab.config(text="COINS:" + str(self.coins))
@@ -225,16 +217,24 @@ class Game_Win:
 
     #This functions creates the table and the rooks. This also move the firts created rooks.   
     def table(self, positions, columm, lines, color, name, contli, contco, saved):
-        
+        global namep
         if contco==columm:
+            #In case is was a saved game
             if saved == "load":
                 pickle_file=open('data.pickle', 'rb')
                 rooks =pickle.load(pickle_file) 
-                self.load_game(rooks, 0, 1, 2)
+                self.load_game(rooks[0], 0, 1, 2)
+                self.time=rooks[1][0]
+                self.coin=rooks[1][1]
+                namep =rooks[1][2]
+                self.name = Label(self.can, text=namep, font=("padauk book",28),fg="royalblue2",bg="black")
+                self.name.place(x=20,y=420,width=150,height=30)
                 
                 
-            #Calls the coinscount function    
+            #Calls the coinscount and time function
+            self.win2 = True
             self.coinscount()
+            self.timer()
 
             #A list of the squares names/tags
             self.squads = ["C0L0", "C0L1", "C0L2", "C0L3", "C0L4", "C1L0", "C1L1", "C1L2", "C1L3", "C1L4",
@@ -295,8 +295,6 @@ class Game_Win:
             #Call the create_avatar function
             self.create_avatar()
 
-            
-            self.object_mo = None
 
         #In case  the box has an uneven position    
         elif contli<=lines and color==0 and contco<=columm:
@@ -525,18 +523,17 @@ class Game_Win:
             
         else:
             self.create(rooks[rook], rooks[place],(rooks, rook, place,color, True),rooks[color])
-            
+    #This function saves the game        
     def load (self):
         global namep
         pickle_file = open('data.pickle', 'wb')
         
         self.tico = ((self.time, self.coins, namep))
-        self.data = (self.data,) + (self.tico,)
+        self.data = (self.data),(self.tico)
         pickle.dump(self.data, pickle_file)
         pickle_file.close()
         pickle_file=open('data.pickle', 'rb')
         data= pickle.load(pickle_file)
-        print(data)
 
     #This functions creates the rooks    
     def create(self, rook, place, info, color):
@@ -580,7 +577,7 @@ class Game_Win:
             if info[4] == True:
                 self.load_game(info[0], info[1]+3, info[2]+3, info[3]+3)
 
-        
+    #this function creat   
     def rooks(self, rook):
         
         if rook == "one":
