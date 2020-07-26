@@ -7,19 +7,23 @@ import os
 
 #Global Data
 name = ""
-
+#1###########################################################################################################
+#Open_Window class: this opens the Game_Win class and the Home_Window class.
 class Open_Window:
+    #This function sends Home_Window to open it.
     def __init__(self, master):
         self.open(Home_Window)
+    #This function opens the sended window.
     def open(self, Twindow):
         Twindow(self)
+    #This function opens the sended window and check if it's a new game or a saved game.
     def switch_frame(self, Twindow, saved):
-        print(saved)
         Twindow(self, saved)
         
-        
+#2###########################################################################################################
+#Home_Window class: It haves and runs the information of the Home Window
 class Home_Window:
-
+    #This function haves the information of the Home Window.
     def __init__(self, inself):
         global name
         #Main Window
@@ -59,52 +63,49 @@ class Home_Window:
         self.credits = Button(self.canvas, text = "CREDITS", font=("padauk book",28),fg="white",bg="black",borderwidth=0,command= self.credits)
         self.credits.place(x=325,y=550,width=180,height=50)
 
-   
+    #This fuction gets and saves the name.
     def playername(self):
         global name
         name = self.write_name.get()
-    #Buttons Pressed
+    #This fuctions works when the buttons are pressed(opens the other windows).
     def game(self):
         Game_Win(inself)
     def instructions(self):
         Instructions_Win()
     def credits(self):
         Credits_Win()
+    #This fuction erase the home window.
     def del_win(self):
         self.canvas.destroy()
 
 
-        
+#3###########################################################################################################
+#Game_Window class: It haves and runs the information of the Game_Window.
 class Game_Win:
+    #This fuction calls to the others funcions to work
     def __init__(self, inself, saved):
         global name
-        print (saved + " 2")
-        print(name)
+        #print (saved + " 2")
+        #print(name)
+        #Background:
         self.can = Canvas( width = 800, height = 675, highlightthickness = 0, relief='ridge', bg= "black")
         self.can.place(x=0,y=0)
-
+        #Name label
         self.name = Label(self.can, text=name, font=("padauk book",28),fg="royalblue2",bg="black")
         self.name.place(x=20,y=420,width=150,height=30)
-
-        
+        #Creates the time fuction to count time
         self.time = 0
         self.timelab = Label(self.can, text= "TIME:" + str(self.time), font=("padauk book",20),fg="white",bg="black")
         self.timelab.place(x=20,y=470,width=140,height=30)
         self.timer()
-        
-        
-
-        #Coins Title
+        #Creates the coins fuction to count the coins that the player have
         self.coins = 0
         self.coinslab = Label(self.can, text= "COINS:" + str(self.coins), font=("padauk book",20),fg="white",bg="black")
         self.coinslab.place(x=40,y=520,width=140,height=30)
-
+        #Save game Button
         self.save = Button(self.can, text = "Save Game", font=("padauk book",20),fg="white",bg="black",borderwidth=0,command= self.load)
-        self.save.place(x=20, y=600)
-        #self.canvas = Canvas( width = 375, height = 675, highlightthickness = 0, relief='ridge')
-        #self.canvas.place(x=300,y=0)
-        
-
+        self.save.place(x=20, y=600)        
+        #Positions of the matrix/table
         positions = (((300,0, 375,75),(375,0, 450,75),(450,0, 525,75),(525,0, 600,75),(600,0, 675,75)),
                      ((300,75, 375,150),(375,75, 450,150),(450,75, 525,150),(525,75, 600,150),(600,75, 675,150)),
                      ((300,150, 375,225),(375,150, 450,225),(450,150, 525,225),(525,150, 600,225),(600,150, 675,225)),
@@ -114,25 +115,22 @@ class Game_Win:
                      ((300,450, 375,525),(375,450, 450,525),(450,450, 525,525),(525,450, 600,525),(600,450, 675,525)),
                      ((300,525, 375,600),(375,525, 450,600),(450,525, 525,600),(525,525, 600,600),(600,525, 675,600)),
                      ((300,600, 375,675),(375,600, 450,675),(450,600, 525,675),(525,600, 600,675),(600,600, 675,675)))
-
-        
-        
-
         self.table(positions, len(positions), len(positions[0])-1, 0, "C0L0", 0,0, saved)
 
+    #This function counts the secons
     def timer(self):
         self.time += 1
         self.timelab.config(text="TIME:" +str(self.time))
         window.after(1000,self.timer)
-            
+        
+    #This function counts the coins and puts new coins randomly in the table        
     def coinscount(self):
-        #Loading images
+        #Loading coins images
         print(self.coins)
         self.coppercoin = PhotoImage(file = "images\CopperCoin.png")
         self.goldcoin = PhotoImage(file = "images\GoldCoin.png")
-        self.silvercoin = PhotoImage(file = "images\SilverCoin.png")
-        
-        
+        self.silvercoin = PhotoImage(file = "images\SilverCoin.png")        
+        #Where to put the coins
         self.squads2 = (((300,150, 375,225),(375,150, 450,225),(450,150, 525,225),(525,150, 600,225),(600,150, 675,225)),
                      ((300,225, 375,300),(375,225, 450,300),(450,225, 525,300),(525,225, 600,300),(600,225, 675,300)),
                      ((300,300, 375,375),(375,300, 450,375),(450,300, 525,375),(525,300, 600,375),(600,300, 675,375)),
@@ -140,68 +138,62 @@ class Game_Win:
                      ((300,450, 375,525),(375,450, 450,525),(450,450, 525,525),(525,450, 600,525),(600,450, 675,525)),
                      ((300,525, 375,600),(375,525, 450,600),(450,525, 525,600),(525,525, 600,600),(600,525, 675,600)),
                      ((300,600, 375,675),(375,600, 450,675),(450,600, 525,675),(525,600, 600,675),(600,600, 675,675)))
-        
-        self.num = random.randint(1,10)
-
-        
+        self.num = random.randint(1,10)        
         #Copper Coin Appears
         if self.num == 1 or self.num == 2 or self.num == 3 or self.num == 4 or self.num==5:
             self.xcord = random.choice((340,415,490,565,640))
             self.ycord = random.choice((160,235,310,385,460,535,610))
             self.coin = self.can.create_image(self.xcord,self.ycord, anchor=N, image=self.coppercoin)
-            self.can.tag_bind(self.coin, "<Button-1>", lambda event: self.press_coppercoin(event,self.coin))
-
-            
+            self.can.tag_bind(self.coin, "<Button-1>", lambda event: self.press_coppercoin(event,self.coin))            
         #Silver Coin Appears
         if self.num == 6 or self.num == 7 or self.num == 8:
             self.xcord = random.choice((340,415,490,565,640))
             self.ycord = random.choice((150,225,300,375,450,525,600))
             self.coin = self.can.create_image(self.xcord,self.ycord, anchor=N, image=self.silvercoin)
             self.can.tag_bind(self.coin, "<Button-1>", lambda event: self.press_silvercoin(event,self.coin))
-
         #Gold Coin Appears
         if self.num == 9 or self.num == 10:
             self.xcord = random.choice((340,415,490,565,640))
             self.ycord = random.choice((150,225,300,375,450,525,600))
             self.coin = self.can.create_image(self.xcord,self.ycord, anchor=N, image=self.goldcoin)
             self.can.tag_bind(self.coin, "<Button-1>", lambda event: self.press_goldcoin(event,self.coin))
-
+            
+    ##This functions susm the value of the coin when it's touched.
     def press_coppercoin(self,event,coin):
         self.coins += 25
         self.coinslab.config(text="COINS:" + str(self.coins))
         self.can.delete(coin)
         window.after(7000,self.coinscount)
-
     def press_silvercoin(self,event,coin):
         self.coins += 50
         self.coinslab.config(text="COINS:" + str(self.coins))
         self.can.delete(coin)
         window.after(7000,self.coinscount)
-
     def press_goldcoin(self,event,coin):
         self.coins += 100
         self.coinslab.config(text="COINS:" + str(self.coins))
         self.can.delete(coin)
         window.after(7000,self.coinscount)
 
-        
+    #This function creates the table and the rooks. This also move the firts created rooks.    
     def table(self, positions, columm, lines, color, name, contli, contco, saved):
         
-        #self.identi= self.can.find_overlapping(0, 0, 55, 200)
+        #In case al the table is load.
         if contco==columm:
+            #In case is a seved game
             if saved == "load":
-                #try:
                 pickle_file=open('data.pickle', 'rb')
                 rooks =pickle.load(pickle_file) 
                 self.load_game(rooks, 0, 1, 2)
-                #except:
-                #    nothing=0
+            #Calls the coinscount function
             self.coinscount()
+            #A list of the squares names/tags
             self.squads = ["C0L0", "C0L1", "C0L2", "C0L3", "C0L4", "C1L0", "C1L1", "C1L2", "C1L3", "C1L4",
                   "C2L0", "C2L1", "C2L2", "C2L3", "C2L4", "C3L0", "C3L1", "C3L2", "C3L3", "C3L4",
                   "C4L0", "C4L1", "C4L2", "C4L3", "C4L4", "C5L0", "C5L1", "C5L2", "C5L3", "C5L4",
                   "C6L0", "C6L1", "C6L2", "C6L3", "C6L4", "C7L0", "C7L1", "C7L2", "C7L3", "C7L4",
                   "C8L0", "C8L1", "C8L2", "C8L3", "C8L4", "C9L0", "C9L1", "C9L2", "C9L3", "C9L4"]
+            #Loading rooks images and getting their id
             self.srook = (PhotoImage(file= os.path.join('images', "sandR.png"))).subsample(2,2)
             self.imageS = self.can.create_image(50, 100, image= self.srook, tags='rook')
             self.can.addtag_withtag("sand", self.imageS)
@@ -218,106 +210,84 @@ class Game_Win:
             self.identi1= self.can.find_overlapping(50, 180, 100, 220)
             self.identi2= self.can.find_overlapping(50, 260, 100, 310)
             self.identi3= self.can.find_overlapping(50, 340, 100, 390)
-
-            
-
-            
-    
-            
-            #self.can.tag_raise(self.identi[0])
-            self.can.tag_bind(self.identi0[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi0[0]))
-            #if self.coins >= 50:
-                
+            #Actions when a rook is moved
+            ##Sand Rook
+            self.can.tag_bind(self.identi0[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi0[0]))   
             self.can.tag_bind(self.identi0[0], "<Button1-Motion>", lambda event: self.move(event,"one"))
             self.can.tag_bind(self.identi0[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"one"))
-            #self.coins -= 50
-            self.coinslab.config(text="COINS:" + str(self.coins))
-            #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
-                             
-            
+            self.coinslab.config(text="COINS:" + str(self.coins))                
+            ##Rock Rook
             self.can.tag_bind(self.identi1[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi1[0]))
             self.can.tag_bind(self.identi1[0], "<Button1-Motion>", lambda event: self.move(event,"two"))
             self.can.tag_bind(self.identi1[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"two"))
-            #self.coins -= 100
             self.coinslab.config(text="COINS:" + str(self.coins))
-                #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
-   
+            ##Fire Rook
             self.can.tag_bind(self.identi2[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi2[0]))
             self.can.tag_bind(self.identi2[0], "<Button1-Motion>", lambda event: self.move(event,"three"))
             self.can.tag_bind(self.identi2[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"three"))
-            #self.coins -= 150
             self.coinslab.config(text="COINS:" + str(self.coins))
-                #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
-
+            ##Wather Rook
             self.can.tag_bind(self.identi3[0], "<ButtonPress-1>", lambda event: self.press_boton(event,self.identi3[0]))
             self.can.tag_bind(self.identi3[0], "<Button1-Motion>", lambda event: self.move(event,"four"))
             self.can.tag_bind(self.identi3[0], "<ButtonRelease-1>", lambda event: self.new_position(event,"four"))
-            #self.coins -= 150
             self.coinslab.config(text="COINS:" + str(self.coins))
-            #window.after(1000,self.table(positions, columm, lines, color, name, contli, contco, saved))
-            #if self.coins== 0:
 
+            #Call the create_avatar function
             self.create_avatar()
-
-            
-                
-            
-            
-            self.object_mo = None
+        #In case  the box has an uneven position
         elif contli<=lines and color==0 and contco<=columm:
             self.can.create_rectangle(positions[contco][contli][0], positions[contco][contli][1],
                                          positions[contco][contli][2], positions[contco][contli][3],
                                          width=1, fill='green',tags=name)
             self.can.addtag_withtag("green", name)
             return self.table(positions, columm, lines, 1, name[:-1] + str(int(name[3])+ 1), contli+1, contco, saved)
+        #In case  the box has an pair position
         elif contli<=lines and color==1 and contco<=columm:
             self.can.create_rectangle(positions[contco][contli][0], positions[contco][contli][1],
                                          positions[contco][contli][2], positions[contco][contli][3],
                                          width=1, fill='blue',tags=name)
             self.can.addtag_withtag("blue", name)
             return self.table(positions, columm, lines, 0, name[:-1] + str(int(name[3])+ 1), contli+1, contco, saved)
+        #In case there is no more lines
         elif contco<columm:
             return self.table(positions, columm, 4, color, "C"+str(int(name[1])+1)+"L0", 0, contco+1, saved)
-
-    def create_avatar(self):
-           
+    #This function calls the other function to create the avatars
+    def create_avatar(self):   
         window.after(3000, lambda :self.arch_avatar())
         window.after(10000, lambda :self.kng_avatar())
         window.after(20000, lambda :self.cann_avatar())
         window.after(30000, lambda :self.lumb_avatar())
         window.after(50000, lambda :self.create_avatar())
-            
-
+        
+    #This functions selects a random place in the last line to put the avatar and calls the move fuction
+    def arch_avatar(self):
+        rpocition= random.randint(0,4)
+        place=self.squads2[6][rpocition]
+        x=place[2]-33
+        y=place[3]-35
+        self.move_ava("arch", y, x)        
     def kng_avatar(self):
         rpocition= random.randint(0,4)
         place=self.squads2[6][rpocition]
         x=place[2]-33
         y=place[3]-35
         self.move_ava("knig", y, x)
-        
-    def arch_avatar(self):
-        rpocition= random.randint(0,4)
-        place=self.squads2[6][rpocition]
-        x=place[2]-33
-        y=place[3]-35
-        self.move_ava("arch", y, x)
-
     def cann_avatar(self):
         rpocition= random.randint(0,4)
         place=self.squads2[6][rpocition]
         x=place[2]-33
         y=place[3]-35
         self.move_ava("cann", y, x)
-
     def lumb_avatar(self):
         rpocition= random.randint(0,4)
         place=self.squads2[6][rpocition]
         x=place[2]-40
         y=place[3]-35
         self.move_ava("lumb", y, x)
-        
+
+    #This fuctions creates the images of the avartars and calls the walk fuction  
     def move_ava(self, avatar, y, x):
-        
+        #ARCHER
         if avatar=="arch":
             x_a, y_a = x, y
             self.archer = (PhotoImage(file= os.path.join('images/Archer', "Walk1.png")))
@@ -326,7 +296,7 @@ class Game_Win:
             #print (self.can.gettags(self.avaimageA))
             if self.can.gettags(self.avaimageA)[1] == "alive":
                 window.after(12000, lambda: [self.walk("arch", y_a, x_a)])
-                
+        #KNIGHT/SHIELD BEARER        
         elif avatar=="knig":
             x_k, y_k = x, y
             #print(x_a)
@@ -336,7 +306,7 @@ class Game_Win:
             #print (self.can.gettags(self.avaimageK))
             if self.can.gettags(self.avaimageK)[1] == "alive":
                 window.after(10000, lambda: [self.walk("knig", y_k, x_k)])
-                
+        #CANNIBAL        
         elif avatar=="cann":
             x_c, y_c = x, y
             #print(x_a)
@@ -346,7 +316,7 @@ class Game_Win:
             #print (self.can.gettags(self.avaimageC))
             if self.can.gettags(self.avaimageC)[1] == "alive":
                 window.after(13000, lambda: [self.walk("cann", y_c, x_c)])
-
+        #LUMBERJACK
         elif avatar=="lumb":
             x_l, y_l = x, y
             #print(x_a)
@@ -357,47 +327,47 @@ class Game_Win:
             if self.can.gettags(self.avaimageL)[1] == "alive":
                 window.after(14000, lambda: [self.walk("lumb", y_l, x_l)])
         
-            
+    #This and the nex fuctions moves the avatar (lively) according to time.       
     def walk(self, avatar, y, x):
-        
+        #ARCHER
         if avatar=="arch":
             window.after(1000, lambda: [self.can.delete(self.avaimageA), self.walk1('images/Archer', "Walk2.png", y-30, x)])
             window.after(1500, lambda: [self.can.delete(self.avaimageA), self.walk1('images/Archer', "Walk3.png", y-60, x)])
             window.after(2000, lambda: [self.can.delete(self.avaimageA), self.move_ava(avatar, y-75, x)])
+        #KNIGHT/SHIELD BEARER
         elif avatar=="knig":
             window.after(1000, lambda: [self.can.delete(self.avaimageK), self.walk1('images/Knight', "Walk2.png", y-30, x)])
             window.after(2000, lambda: [self.can.delete(self.avaimageK), self.walk1('images/Knight', "Walk3.png", y-60, x)])
             window.after(3000, lambda: [self.can.delete(self.avaimageK), self.move_ava(avatar, y-75, x)])
-
+        #CANNIBAL
         elif avatar=="cann":
             window.after(1000, lambda: [self.can.delete(self.avaimageC), self.walk1('images/Cannibal', "Walk2.png", y-30, x)])
             window.after(2000, lambda: [self.can.delete(self.avaimageC), self.walk1('images/Cannibal', "Walk3.png", y-60, x)])
             window.after(3000, lambda: [self.can.delete(self.avaimageC), self.move_ava(avatar, y-75, x)])
-
+        #LUMBERJACK
         elif avatar=="lumb":
             window.after(1000, lambda: [self.can.delete(self.avaimageL), self.walk1('images/Lumberjack', "Walk2.png", y-30, x)])
             window.after(2000, lambda: [self.can.delete(self.avaimageL), self.walk1('images/Lumberjack', "Walk3.png", y-60, x)])
-            window.after(3000, lambda: [self.can.delete(self.avaimageL), self.move_ava(avatar, y-75, x)])
-                                        
-
+            window.after(3000, lambda: [self.can.delete(self.avaimageL), self.move_ava(avatar, y-75, x)])                                   
     def walk1(self, location, image, y, x):
-        #print(location[-4:])
+        #ARCHER
         if location[-4:]=="cher":
             self.archer = (PhotoImage(file= os.path.join(location, image)))
             self.avaimageA = self.can.create_image(x, y, image= self.archer, tags="arch")
+        #KNIGHT/SHIELD BEARER
         elif location[-4:]=="ight":
             self.knight = (PhotoImage(file= os.path.join(location, image)))
             self.avaimageK = self.can.create_image(x, y, image= self.knight, tags="knig")
-
+        #CANNIBAL
         elif location[-4:]=="ibal":
             self.cannibal = (PhotoImage(file= os.path.join(location, image)))
             self.avaimageC = self.can.create_image(x, y, image= self.cannibal, tags="cann")
-
+        #LUMBERJACK
         elif location[-4:]=="jack":
             self.lumberjack = (PhotoImage(file= os.path.join(location, image)))
             self.avaimageL = self.can.create_image(x, y, image= self.lumberjack, tags="lumb")
     
-        
+    #This function move     
     def press_boton(self, event, ID):
         rook = ID
         self.selected_rook = (rook, event.x, event.y)
