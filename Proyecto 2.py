@@ -180,7 +180,7 @@ class Game_Win:
             if self.num == 1 or self.num == 2 or self.num == 3 or self.num == 4 or self.num==5:
                 self.xcord = random.choice((340,415,490,565,640))
                 self.ycord = random.choice((160,235,310,385,460,535,610))
-                self.coin = self.can.create_image(self.xcord,self.ycord, anchor=N, image=self.coppercoin)
+                self.coin = self.can.create_image(self.xcord,self.ycord, anchor=N, image=self.coppercoin, tags= "coin")
                 self.can.tag_bind(self.coin, "<Button-1>", lambda event: self.press_coppercoin(event,self.coin))
 
                 
@@ -188,14 +188,14 @@ class Game_Win:
             if self.num == 6 or self.num == 7 or self.num == 8:
                 self.xcord = random.choice((340,415,490,565,640))
                 self.ycord = random.choice((150,225,300,375,450,525,600))
-                self.coin = self.can.create_image(self.xcord,self.ycord, anchor=N, image=self.silvercoin)
+                self.coin = self.can.create_image(self.xcord,self.ycord, anchor=N, image=self.silvercoin, tags= "coin")
                 self.can.tag_bind(self.coin, "<Button-1>", lambda event: self.press_silvercoin(event,self.coin))
 
             #Gold Coin Appears
             if self.num == 9 or self.num == 10:
                 self.xcord = random.choice((340,415,490,565,640))
                 self.ycord = random.choice((150,225,300,375,450,525,600))
-                self.coin = self.can.create_image(self.xcord,self.ycord, anchor=N, image=self.goldcoin)
+                self.coin = self.can.create_image(self.xcord,self.ycord, anchor=N, image=self.goldcoin, tags= "coin")
                 self.can.tag_bind(self.coin, "<Button-1>", lambda event: self.press_goldcoin(event,self.coin))
 
     #This functions sums the value of the coin when it's touched.
@@ -327,11 +327,10 @@ class Game_Win:
         
 
     def win_time(self):
-        self.win -=1
         self.youwin = Label(self.can, text= "YOU WIN!", font=("padauk book",30),fg="white",bg="black")
         self.youwin.place(x=350,y=360,width=230,height=70)
 
-        self.yourscore = Label(self.can, text= "YOUR SCORE:" + str(self.coins), font=("padauk book",20),fg="white",bg="black")
+        self.yourscore = Label(self.can, text= "YOUR SCORE:" + str(5000-self.time), font=("padauk book",20),fg="white",bg="black")
         self.yourscore.place(x=350,y=460,width=280,height=40)
 
         #Back Button
@@ -379,6 +378,14 @@ class Game_Win:
 
     #This fuctions creates the images of the avartars and calls the walk fuction
     def move_ava(self, avatar, y, x):
+        #In case a avatar reach the upper limit
+        if y<=0:
+            self.win2=False
+            self.youwin = Label(self.can, text= "YOU LOSE :(", font=("padauk book",30),fg="white",bg="black")
+            self.youwin.place(x=350,y=360,width=230,height=70)
+
+            self.yourscore = Label(self.can, text= "YOUR SCORE:" + str((5000-self.time)-2500), font=("padauk book",20),fg="white",bg="black")
+            self.yourscore.place(x=350,y=460,width=280,height=40)
 
         #Archer
         if avatar=="arch":
@@ -487,21 +494,25 @@ class Game_Win:
         if location[-4:]=="cher":
             self.archer = (PhotoImage(file= os.path.join(location, image)))
             self.avaimageA = self.can.create_image(x, y, image= self.archer, tags="arch")
+            self.can.addtag_withtag("alive", self.avaimageA)
 
         #Knight
         elif location[-4:]=="ight":
             self.knight = (PhotoImage(file= os.path.join(location, image)))
             self.avaimageK = self.can.create_image(x, y, image= self.knight, tags="knig")
+            self.can.addtag_withtag("alive", self.avaimageK)
 
         #Cannibal
         elif location[-4:]=="ibal":
             self.cannibal = (PhotoImage(file= os.path.join(location, image)))
             self.avaimageC = self.can.create_image(x, y, image= self.cannibal, tags="cann")
+            self.can.addtag_withtag("alive", self.avaimageC)
 
         #Lumberjack
         elif location[-4:]=="jack":
             self.lumberjack = (PhotoImage(file= os.path.join(location, image)))
             self.avaimageL = self.can.create_image(x, y, image= self.lumberjack, tags="lumb")
+            self.can.addtag_withtag("alive", self.avaimageL)
     
     #This function detect the button pressed    
     def press_boton(self, event, ID):
@@ -635,7 +646,7 @@ class Game_Win:
                     position[0]+30,position[1]+70, position[0]+40,position[1]+60)
             self.rang=self.can.find_enclosed(position[0]-2, position[1], position[2]-2, position[3]+900)
             
-            if len(self.rang)> 0:
+            if len(self.rang)> 0 and (self.can.gettags(self.rang[-1])[-1]=="alive"or self.can.gettags(self.rang[-1])[1]=="coin"):
                 self.Sarrow =self.can.create_polygon(Spoints,width=1,outline="black", fill="darkorange3", tags= "Sarrow")
                 self.can.addtag_withtag("2", self.Sarrow)
                 self.limit=Spoints[5]+100
@@ -645,7 +656,7 @@ class Game_Win:
             Rpoints=(position[0]+30,position[1]+40, position[0]+20,position[1]+60,
                     position[0]+30,position[1]+70, position[0]+40,position[1]+60)
             rang=self.can.find_enclosed(position[0]-2, position[1], position[2]-2, position[3]+800)
-            if len(rang)> 0:
+            if len(rang)> 0 and (self.can.gettags(self.rang[-1])[-1]=="alive"or self.can.gettags(self.rang[-1])[1]=="coin"):
                 self.Rarrow =self.can.create_polygon(Rpoints,width=1,outline="black", fill="gray40", tags= "Rarrow")
                 self.can.addtag_withtag("4", self.Rarrow)
                 self.limit=Rpoints[5]+100
@@ -655,7 +666,7 @@ class Game_Win:
             Fpoints=(position[0]+30,position[1]+40, position[0]+20,position[1]+60,
                     position[0]+30,position[1]+70, position[0]+40,position[1]+60)
             rang=self.can.find_enclosed(position[0]-2, position[1], position[2]-2, position[3]+800)
-            if len(rang)> 0:
+            if len(rang)> 0 and (self.can.gettags(self.rang[-1])[-1]=="alive"or self.can.gettags(self.rang[-1])[1]=="coin"):
                 self.Farrow =self.can.create_polygon(Fpoints,width=1,outline="black", fill="darkorange1", tags= "Farrow")
                 self.can.addtag_withtag("8", self.Farrow)
                 self.limit=Fpoints[5]+100
@@ -665,7 +676,7 @@ class Game_Win:
             Wpoints=(position[0]+30,position[1]+40, position[0]+20,position[1]+60,
                     position[0]+30,position[1]+70, position[0]+40,position[1]+60)
             rang=self.can.find_enclosed(position[0]-2, position[1], position[2]-2, position[3]+800)
-            if len(rang)> 0:
+            if len(rang)> 0 and (self.can.gettags(self.rang[-1])[-1]=="alive" or self.can.gettags(self.rang[-1])[1]=="coin"):
                 self.Warrow =self.can.create_polygon(Wpoints,width=1,outline="black", fill="dodgerblue3", tags= "Warrow")
                 self.can.addtag_withtag("8", self.Warrow)
                 self.limit=Wpoints[5]+100
