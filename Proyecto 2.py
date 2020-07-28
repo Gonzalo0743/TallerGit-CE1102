@@ -646,7 +646,7 @@ class Game_Win:
                     position[0]+30,position[1]+70, position[0]+40,position[1]+60)
             self.rang=self.can.find_enclosed(position[0]-2, position[1], position[2]-2, position[3]+900)
             
-            if len(self.rang)> 0 and (self.can.gettags(self.rang[-1])[-1]=="alive"or self.can.gettags(self.rang[-1])[1]=="coin"):
+            if len(self.rang)> 0 :
                 self.Sarrow =self.can.create_polygon(Spoints,width=1,outline="black", fill="darkorange3", tags= "Sarrow")
                 self.can.addtag_withtag("2", self.Sarrow)
                 self.limit=Spoints[5]+100
@@ -656,7 +656,7 @@ class Game_Win:
             Rpoints=(position[0]+30,position[1]+40, position[0]+20,position[1]+60,
                     position[0]+30,position[1]+70, position[0]+40,position[1]+60)
             rang=self.can.find_enclosed(position[0]-2, position[1], position[2]-2, position[3]+800)
-            if len(rang)> 0 and (self.can.gettags(self.rang[-1])[-1]=="alive"or self.can.gettags(self.rang[-1])[1]=="coin"):
+            if len(rang)> 0 :
                 self.Rarrow =self.can.create_polygon(Rpoints,width=1,outline="black", fill="gray40", tags= "Rarrow")
                 self.can.addtag_withtag("4", self.Rarrow)
                 self.limit=Rpoints[5]+100
@@ -666,7 +666,7 @@ class Game_Win:
             Fpoints=(position[0]+30,position[1]+40, position[0]+20,position[1]+60,
                     position[0]+30,position[1]+70, position[0]+40,position[1]+60)
             rang=self.can.find_enclosed(position[0]-2, position[1], position[2]-2, position[3]+800)
-            if len(rang)> 0 and (self.can.gettags(self.rang[-1])[-1]=="alive"or self.can.gettags(self.rang[-1])[1]=="coin"):
+            if len(rang)> 0 :
                 self.Farrow =self.can.create_polygon(Fpoints,width=1,outline="black", fill="darkorange1", tags= "Farrow")
                 self.can.addtag_withtag("8", self.Farrow)
                 self.limit=Fpoints[5]+100
@@ -676,7 +676,7 @@ class Game_Win:
             Wpoints=(position[0]+30,position[1]+40, position[0]+20,position[1]+60,
                     position[0]+30,position[1]+70, position[0]+40,position[1]+60)
             rang=self.can.find_enclosed(position[0]-2, position[1], position[2]-2, position[3]+800)
-            if len(rang)> 0 and (self.can.gettags(self.rang[-1])[-1]=="alive" or self.can.gettags(self.rang[-1])[1]=="coin"):
+            if len(rang)> 0 :
                 self.Warrow =self.can.create_polygon(Wpoints,width=1,outline="black", fill="dodgerblue3", tags= "Warrow")
                 self.can.addtag_withtag("8", self.Warrow)
                 self.limit=Wpoints[5]+100
